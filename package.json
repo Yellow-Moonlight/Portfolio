@@ -1,0 +1,26 @@
+{
+  "name": "portfolio",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Yellow-Moonlight/Portfolio.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Yellow-Moonlight/Portfolio/issues"
+  },
+  "homepage": "https://github.com/Yellow-Moonlight/Portfolio#readme",
+  "description": "",
+  "dependencies": {
+    "fs-extra": "^11.3.2",
+    "gray-matter": "^4.0.3",
+    "marked": "^16.4.0"
+  }
+}
