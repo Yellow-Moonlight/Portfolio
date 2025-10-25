@@ -1,0 +1,393 @@
+:root {
+    --color-primary: oklch(2% 0.0 0);
+    --color-bg: oklch(98.00% 0.0 0);
+    --color-sub: oklch(50% 0.27 263);
+    --max-img-width: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: normal;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+    color: var(--color-primary);
+    background-color: var(--color-bg);
+}
+
+/* Navigation */
+.nav-container {
+    padding: 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    background-color: var(--color-bg);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.nav-list {
+    display: flex;
+    justify-content: flex-end;
+    list-style: none;
+    gap: 2rem;
+}
+
+
+.nav-list a {
+    text-decoration: none;
+    color: var(--color-primary);
+    font-size: 1rem;
+}
+
+
+.hamburger {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.site-title {
+    text-decoration: none;
+    color: #000;
+    font-weight: 600;
+    font-size: 1.05rem;
+}
+
+/* Main content */
+.main-content {
+    margin: 4rem auto;
+    /* top spacing and center horizontally */
+    padding: 1rem;
+    max-width: 900px;
+    /* unify content width across pages */
+}
+
+/* List layout */
+.content-list {
+    list-style: none;
+    margin: 2rem 0;
+}
+
+.content-list li {
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.content-list a {
+    text-decoration: none;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.content-list .date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/* News feed: use full width of .main-content so left/right gaps match nav/title */
+.news-feed {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+.news-item {
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+
+
+/* Unified post/about styles (moved from inline <style> in pages) */
+.nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    /* move nav padding here so it aligns with .main-content */
+    box-sizing: border-box;
+}
+
+.about-content,
+.post-content {
+    max-width: none;
+    width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    /* ensure padding doesn't affect overall width */
+}
+
+.about-section {
+    margin-bottom: 2rem;
+}
+
+.contact-info {
+    margin-top: 3rem;
+}
+
+.contact-info a,
+.post-source a {
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #000;
+}
+
+.post-header {
+    margin-bottom: 2rem;
+}
+
+.post-title {
+    margin-bottom: 1rem;
+}
+
+.post-summary {
+    margin-bottom: 1rem;
+}
+
+.post-date {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.post-body {
+    margin-top: 2rem;
+    line-height: 1.6;
+}
+
+.post-body p {
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+.post-body h2 {
+    margin-top: 2rem;
+}
+
+.work-details {
+    margin: 2rem 0;
+}
+
+.work-details dt {
+    font-weight: normal;
+    margin-top: 1rem;
+}
+
+.work-details dd {
+    margin-left: 0;
+    color: #666;
+}
+
+blockquote {
+    margin: 2rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid #000;
+    font-style: italic;
+}
+
+.post-body img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: none;
+    object-fit: contain;
+}
+
+
+
+/* Image caption styling: centered, small, italic */
+.img-caption,
+figure figcaption {
+    text-align: center;
+    font-size: 0.9rem;
+    font-style: italic;
+    color: #666;
+    margin: 0.5rem;
+}
+
+.img-vertical {
+    max-width: 50%;
+    margin: 0 auto;
+}
+
+/* Optional figure wrapper reset to remove default margins */
+figure {
+    margin: 0;
+}
+
+/* Image grid layout for multiple images in a figure */
+.figure--grid {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+/* Grid layout for images */
+.figure--grid .img-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+}
+
+/* By default (mobile), images stack vertically */
+.figure--grid img {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    /* Override default img margin */
+}
+
+/* Caption always spans full width below images */
+.figure--grid figcaption {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+}
+
+a:hover{
+    color: var(--color-sub);
+}
+
+::selection { 
+    color: var(--color-bg); 
+    background-color: var(--color-primary);
+}
+
+
+
+/* On desktop, create a horizontal grid for images */
+@media (min-width: 768px) {
+    .figure--grid .img-grid {
+        grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+        align-items: start;
+    }
+}
+
+.video-container {
+    max-width: 400px;
+    margin: 2rem 0;
+    position: relative;
+    padding-bottom: 56.25%;
+    /* 16:9 비율 */
+    height: 0;
+    overflow: hidden;
+}
+
+.video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+.post-source {
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.tags {
+    margin-top: 3rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+/*---------------
+  Responisve Youtube
+  ------------*/
+
+.container {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    padding-top: 56.25%;
+    /* 16:9 Aspect Ratio */
+}
+
+.containervertical {
+    position: relative;
+    width: 56.25%;
+    overflow: hidden;
+    padding-top: 100%;
+    /* 16:9 Aspect Ratio */
+    margin: 0 auto;
+
+}
+
+/* Then style the iframe to fit in the container div with full height and width */
+.responsive-iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+/* Mobile styles */
+@media (max-width: 768px) {
+    .nav-list {
+        display: none;
+        flex-direction: column;
+        position: fixed;
+        top: 3rem;
+        left: 0;
+        width: 100%;
+        align-items: flex-end;
+        background: #fff;
+        padding: 1rem;
+    }
+
+    .nav-list.active {
+        display: flex;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    /* Make hamburger larger and easier to tap on mobile */
+    .hamburger {
+        font-size: 1.6rem;
+        padding: 0.25rem 0.5rem;
+    }
+
+    /* Right-align menu text on mobile */
+    .nav-list a {
+        text-align: right;
+        display: block;
+        width: 100%;
+        padding: 0.5rem 0;
+    }
+
+    .img-vertical {
+        max-width: 100%;
+    }
+}

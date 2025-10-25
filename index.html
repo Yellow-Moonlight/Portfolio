@@ -1,85 +1,39 @@
-<!DOCTYPE HTML>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="ko">
 
 <head>
-    <meta charset="utf-8">
-
-    <title>Seongjoo Moon Portfolio for HfK Bremen DM Master apply</title>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Seongjoo Moon 문성주" />
-    <meta name="keywords" content="Seongjoo Moon, Artist" />
-
-    <link rel="stylesheet" href="assets/style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-    <header class="site-header">
-        <h1><a href="index.html" id="top">Seongjoo Moon</a></h1>
-        <nav id="menu">
-            <ul id="menu-list">
-                <li class="">
-                    <a data-nav="projects" href="news.html">
-                        <span>news</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a data-nav="projects" href="index.html">
-                        <span>YPProjects</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a data-nav="about" href="works.html">
-                        <span>works</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a data-nav="projects" href="about.html">
-                        <span>about</span>
-                    </a>
-                </li>
-                <li class="">
-                    <a data-nav="projects" href="blog.html">
-                        <span>Rabbit hole</span>
-                    </a>
-                </li>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="pages/about.html">about</a></li>
+                <li><a href="pages/news.html">news</a></li>
+                <li><a href="pages/ypp.html">ypp</a></li>
+                <li><a href="pages/works.html">works</a></li>
+                <li><a href="pages/rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="pages/drift.html">drift</a></li>
             </ul>
-        </nav>
-    </header>
+        </div>
+    </nav>
 
-
-    <main class="home article-list">
-        <section class = "article">
-            <h2>
-                YPP - Yellow Playground Project
-            </h2>
-            <p>
-                Yellow playground project is ~~~.
-            </p>
-
-        </section>
-        <section class="grid" id="mischief">
-            <div class="article">
-                <a href="projects/mischief.html">
-                    <div class="image-center">
-                        <div class="featured-img" style="background-image: url(assets/images/mischief-1.jpg);">
-                        </div>
-                    </div>
-                    <div class="text">
-                        <h2 class="entry-title">Mischief</h2>
-                        <p class="index-summary">
-                            Performacne with toy-instruments, founded or self-made toy, Mikrocontrollers, Sensors,
-                            Ableton Live
-                        </p>
-                        <time class="published">2024-2025</time>
-                    </div>
-                </a>
-            </div>
-        </section>
+    <main class="main-content">
+        <!-- Main content will go here -->
+        
     </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
 </body>
 
-
-<footer>
-    Copyright. Seongjoo Moon.
-</footer>
+</html>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPP Project 1 - Portfolio</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../ypp.html">ypp</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">Wave and River</h1>
+                <div class="post-date">2025</div>
+            </header>
+            
+            <div class="post-body">
+                <p>Project description and details...</p>
+                <p>Context and background information...</p>
+
+                <!-- image: wave_and_river (400px PNG) -->
+                <img src="../../assets/images/ypp/wave_and_river1.png" alt="Wave and River" width="400" loading="lazy" decoding="async">
+
+                <!-- YouTube video embed -->
+                <div class="video-container">
+                    <iframe 
+                        width="400" 
+                        height="225" 
+                        src="https://www.youtube-nocookie.com/embed/uAoVLkqTukg" 
+                        title="YouTube video player"
+                        frameborder="0" 
+                        allow="ac˜celerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+
+                <p>Process and methodology...</p>
+                <p>Results and outcomes...</p>
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>News - Portfolio</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="../index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="about.html">about</a></li>
+                <li><a href="news.html">news</a></li>
+                <li><a href="ypp.html">ypp</a></li>
+                <li><a href="works.html">works</a></li>
+                <li><a href="rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="news-feed">
+            <!-- Sample news item -->
+            <article class="news-item">
+                <h2>Exhibition Title</h2>
+                <div class="news-date">October 24, 2025</div>
+                <div class="news-content">
+                    <p>Exhibition details...</p>
+                </div>
+            </article>
+
+            <!-- Another sample news item -->
+            <article class="news-item">
+                <h2>Another Exhibition</h2>
+                <div class="news-date">October 23, 2025</div>
+                <div class="news-content">
+                    <p>More exhibition details...</p>
+                </div>
+            </article>
+        </div>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
