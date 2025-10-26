@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPP Project 1 - Portfolio</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../ypp.html">ypp</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">Origin</h1>
+                <h3 class="post-summary">An installation that exposes the unseen human labor behind fast fashion, inviting viewers to reflect on the hidden cost of consumption.
+                </h3>
+                <div class="post-date">2015</div>
+            </header>
+
+            <div class="post-body">
+                <figure class="figure">
+                    <img class="img-vertical" src="../../assets/images/works/origin1_4color.png" alt="" loading="lazy"
+                        decoding="async"><br>
+                        <img class="img-vertical" src="../../assets/images/works/origin2_4color.png" alt="" loading="lazy"
+                        decoding="async">
+                </figure>
+                <p>
+                   Origin is an installation that examines the invisible structures sustaining global fast fashion. A wall made of boxes marked with familiar SPA brand logos stands as a symbol of mass production and consumption. Behind this wall, a single sewing machine flickers every five seconds, emitting light and mechanical noise. The rhythmic pulse evokes both the persistence and exhaustion of industrial labor—revealing the distance between the polished surface of consumer goods and the human effort that sustains them. Through this contrast, the work encourages viewers to reconsider what lies beyond the garments they wear.
+                </p>
+
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

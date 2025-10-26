@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPP Project 1 - Portfolio</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../ypp.html">ypp</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">For the Exhibition(I'm literally lying, please believe me)</h1>
+                <h3 class="post-summary">In the video, I connect an electrical cable from my studio (974 Buheung-ro,
+                    Baekseok-eup, Yangju-si, Gyeonggi-do, South Korea) to the exhibition space, Pado (198 Seongmisan-ro,
+                    Yeonnam-dong, Mapo-gu, Seoul, South Korea), approximately 35 kilometers away. Through this setup, I
+                    use electricity from the exhibition space to power the lights in my studio.</h3>
+                <div class="post-date">2023-2024</div>
+            </header>
+
+            <div class="post-body">
+
+                <figure class="figure">
+                    <div class="container">
+                        <iframe class="responsive-iframe"
+                            src="https://www.youtube.com/embed/vscE6dxybsI?si=ggKAPhWyJBEKMEKY"
+                            allowfullscreen></iframe>
+                    </div>
+                    <figcaption class="img-caption">For the exhibition, 2ch video, 10m 43s, camera by Yeonhee Kim</figcaption>
+                </figure>
+
+                <figure class="figure">
+                    <img src="../../assets/images/works/fortheexhibition_1_4color.png"
+                        alt="" loading="lazy" decoding="async">
+                    <figcaption class="img-caption">Exhibition view
+                    </figcaption>
+                </figure>
+
+
+                <figure class="figure">
+                    <div class="container">
+                        <iframe class="responsive-iframe"
+                            src="../../assets/videos/converted_fortheexhibition.mp4"></iframe>
+                    </div>
+                    <figcaption class="img-caption">An interactive installation presented alongside the video work.
+                    </figcaption>
+                </figure>
+                <p>
+                    Using Arduino and Processing, I created a system where plugging a plug into an outlet triggers a video of the studio lights turning on, with the video skipping through its playback. This was designed to give the illusion that the cable is physically connected and powering the studio in real life. The sensor was implemented by installing a limit switch inside the outlet, which detects when the plug is inserted. When triggered, the system runs a short 8-second video that skips through its playback, making it appear as if the lights in the dark studio turn on and off.
+                </p>
+
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

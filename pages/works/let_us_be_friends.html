@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPP Project 1 - Portfolio</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../ypp.html">ypp</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">Let's be freinds</h1>
+                <h3 class="post-summary">An interactive wooden device uses Arduino and sensors to physically press a
+                    camera’s shutter when someone passes by, inviting spontaneous connection between human and machine.
+                </h3>
+                <div class="post-date">2014</div>
+            </header>
+
+            <div class="post-body">
+                <figure class="figure">
+                    <img src="../../assets/images/works/letusbefriends_4color.png" alt="" loading="lazy"
+                        decoding="async">
+                </figure>
+                <p>
+                    "Let’s Be Friends" is an interactive installation that explores the relationship between humans and
+                    machines through a simple yet poetic gesture. A wooden mechanism equipped with Arduino and motion
+                    sensors detects when someone walks in front of a camera. In response, it physically presses the
+                    camera’s shutter button, capturing the moment automatically. 
+                </p>
+
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

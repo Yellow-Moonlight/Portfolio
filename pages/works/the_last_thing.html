@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPP Project 1 - Portfolio</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../ypp.html">ypp</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">The last thing you had</h1>
+                <h3 class="post-summary">An installation inspired by Park Wan-suh’s novel The Last Thing I Had,
+                    reflecting on the sorrow of an era in which even human lives became torches for change.
+                </h3>
+                <div class="post-date">2019</div>
+            </header>
+
+            <div class="post-body">
+                <figure class="figure">
+                    <img class="img-vertical" src="../../assets/images/works/the_last_thing_you_had_4color.png" alt="" loading="lazy"
+                        decoding="async">
+                </figure>
+                <p>
+                    The last thing you had takes its title from Korean author Park Wan-suh’s novel [The last thing I had], which portrays a
+                    mother’s grief over her son’s death during a protest. The work reflects on the line, “What matters
+                    is not whether he was an activist, but that the times were so dark that he could not help but make
+                    even his death a torch.” Through this perspective, the piece contemplates a period when human life
+                    itself was consumed in the pursuit of light. It is an elegy for those who were lost and a quiet
+                    mourning for the darkness of history that demanded such sacrifice.
+                </p>
+
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPP Project 1 - Portfolio</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../ypp.html">ypp</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">Inherited Injustice</h1>
+                <h3 class="post-summary">An installation and performance that confront how we continue to live upon—and
+                    consume—the sacrifices of those who came before us.
+                </h3>
+                <div class="post-date">2019</div>
+            </header>
+
+            <div class="post-body">
+
+                <p>
+                    Inherited Injustice continues the reflection on collective memory and sacrifice. Hundreds of
+                    charcoal figures, each resembling a seated human form, are installed along a wall, gazing down at
+                    the viewers. The figures evoke the weight of those who endured oppression and loss, their blackened
+                    surfaces both fragile and enduring.<br><br>
+
+                    In the accompanying performance Burn and Eat, these charcoal figures are used to grill and share
+                    meat with the audience. This act transforms remembrance into participation, suggesting that we,
+                    willingly or not, keep benefiting from the pain and struggle of past generations. The work serves as
+                    a quiet confrontation—a reminder that inherited injustice persists not only in history, but within
+                    our daily lives.
+                </p>
+
+                <figure class="figure">
+                    <img class="img-vertical" src="../../assets/images/works/inherited_injustice1_4color.png" alt=""
+                        loading="lazy" decoding="async">
+                </figure>
+                <br>
+
+                <figure class="figure">
+                    <img src="../../assets/images/works/inherited_injustice2_4color.png" alt="" loading="lazy"
+                        decoding="async">
+                </figure><br>
+                <figure class="figure">
+                    <img src="../../assets/images/works/inherited_injustice3_4color.png" alt="" loading="lazy"
+                        decoding="async">
+                </figure><br>
+
+                <figure class="figure">
+                    <div class="container">
+                        <iframe class="responsive-iframe"
+                            src="https://www.youtube.com/embed/76BC7v6PXzM?si=k6Hhlos9IKFEl8mV"
+                            allowfullscreen></iframe>
+                    </div>
+                    <figcaption class="img-caption">Performance at Kookmin Univ, 17.12.2019</figcaption>
+                </figure>
+
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

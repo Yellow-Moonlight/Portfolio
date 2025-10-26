@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YPP Project 1 - Portfolio</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../ypp.html">ypp</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../drift.html">drift</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">Something went wrong</h1>
+                <h3 class="post-summary">"Something went wrong" is a video that the audience is unable to view.</h3>
+                <div class="post-date">2021-2022</div>
+            </header>
+
+            <div class="post-body">
+
+                <p>
+                    In the work, viewers see a monitor displaying a rendering screen. To the right of the monitor, a
+                    printed apology notice is attached to the wall. The note reads:
+                    <br>
+                    <br>
+                    "I'm sorry. The encoding has not been completed, so you cannot watch the video yet. You can watch
+                    the video as soon as the encoding is complete."
+                    <br>
+                    <br>
+
+                    However, if you look closely at the rendering screen, you may notice something strange — the
+                    estimated rendering time shows that several days remain. In reality, the screen is not an actual
+                    rendering process but a visual simulation created using HTML.
+                    The rendering start time corresponds to the opening time of the exhibition, and the completion time
+                    is set to the closing time of the exhibition. In other words, no matter how long the audience waits,
+                    they will never be able to watch the video. Even if someone stays until the very end of the
+                    exhibition, due to a final twist, the video will still remain inaccessible.
+
+                    <br><br>
+                    <b>Something went wrong!</b>
+                </p>
+
+                <figure class="figure">
+                    <img src="../../assets/images/works/somethingwentwrong_1_4color.png" alt=""
+                        loading="lazy" decoding="async">
+                    <figcaption class="img-caption">Exhibition view
+                    </figcaption>
+                </figure>
+
+                <figure>
+                        <div class="container">
+                            <iframe class="responsive-iframe"
+                                src="https://yellow-moonlight.github.io/somethingwentwrong/" allowfullscreen></iframe>
+                        </div>
+                        <div class="figure-controls">
+                            <figcaption class="caption">
+                                <span><em>Screen Simulation Example:<br>
+                                        In this screen, the rendering start date is set to December 26, 2022,<br> and the
+                                        rendering end date is set to September 30, 2099.<br>
+                                        The elapsed rendering time is <span id="overt"></span>,<br>
+                                        and the remaining rendering time is <span id="remaint"></span>,<br>
+                                        with <span id="percent"></span>% completed.</em></span>
+                            </figcaption>
+                        </div>
+                    </figure>
+
+
+                <figure class="figure">
+                    <img src="../../assets/images/works/somethingwentwrong_2_4color.png" alt=""
+                        loading="lazy" decoding="async">
+                    <figcaption class="img-caption">When the exhibition ends and the remaining rendering time reaches zero, the screen changes as shown in the image above.
+                    </figcaption>
+                </figure>
+
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>
+
+
+<script>
+  CountDownTimer('12/26/2022 09:00 AM', '9/30/2099 5:00 PM', 'percent', 'overt', 'remaint');
+
+  function CountDownTimer(startDateStr, endDateStr, percentId, elapsedId, remainingId) {
+    const start = new Date(startDateStr);
+    const end = new Date(endDateStr);
+
+    const second = 1000;
+    const minute = second * 60;
+    const hour = minute * 60;
+    const day = hour * 24;
+
+    function showRemaining() {
+      const now = new Date();
+
+      const totalDuration = end - start;
+      const timeElapsed = now - start;
+      const timeRemaining = end - now;
+
+      if (timeRemaining < 0) {
+        document.getElementById(percentId).innerText = "100.00000";
+        document.getElementById(elapsedId).innerText = formatTime(totalDuration);
+        document.getElementById(remainingId).innerText = "0 days 0 hours 0 minutes 0 seconds";
+        clearInterval(timer);
+        return;
+      }
+
+      // 계산: 경과 및 남은 시간
+      document.getElementById(elapsedId).innerText = formatTime(timeElapsed);
+      document.getElementById(remainingId).innerText = formatTime(timeRemaining);
+
+      // 퍼센트 계산
+      const percent = (timeElapsed / totalDuration) * 100;
+      document.getElementById(percentId).innerText = percent.toFixed(5);
+    }
+
+    function formatTime(milliseconds) {
+      const days = Math.floor(milliseconds / day);
+      const hours = Math.floor((milliseconds % day) / hour);
+      const minutes = Math.floor((milliseconds % hour) / minute);
+      const seconds = Math.floor((milliseconds % minute) / second);
+      return `${days} days ${hours} hours ${minutes} minutes ${seconds} seconds`;
+    }
+
+    const timer = setInterval(showRemaining, 1000);
+  }
+</script>
