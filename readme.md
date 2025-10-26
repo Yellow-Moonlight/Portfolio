@@ -1,4 +1,4 @@
-# Is LOW Weight Portfolio for Artist available?
+# Is it possible to have a low-weight portfolio website for an artist?
 
 ## 1. Introduction
 
