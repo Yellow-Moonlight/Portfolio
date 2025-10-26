@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../blog.html">blog</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">gun versus rock / bullet versus tree</h1>
+                <h3 class="post-summary">Two video works documenting plaster models of a gun and a bullet being ground down against rock and wood—an inversion of violence, where weapons erode themselves through futile contact.</h3>
+                <div class="post-date">2022</div>
+            </header>
+
+            <div class="post-body">
+
+                <figure class="figure">
+                    <div class="container">
+                        <iframe class="responsive-iframe"
+                            src="https://www.youtube.com/embed/PGG8Kp_45Xs?si=LiQlm7G_8J66r4O_"
+                            allowfullscreen></iframe>
+                    </div>
+                    <figcaption class="img-caption">Gun Versus Rock, video, 2m 1s, camera by Yeonhee Kim</figcaption>
+                </figure>
+
+                <figure class="figure">
+                    <div class="container">
+                        <iframe class="responsive-iframe"
+                            src="https://www.youtube.com/embed/CXoMhAMxEkw?si=BEA0m7XaSs-V32k-"
+                            allowfullscreen></iframe>
+                    </div>
+                    <figcaption class="img-caption">Bullet Versus Tree, video, 1m 39s, camera by Yeonhee Kim</figcaption>
+                </figure>
+
+                <p>
+                    Gun versus Rock and Bullet versus Tree are paired video works exploring the reversal of power between objects of violence and nature. In each piece, plaster replicas of a gun and a bullet are rubbed repeatedly against a rock and a tree. Over time, the fragile plaster wears away, crumbling into dust.
+                </p>
+
+            </div>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+</body>
+
+</html>

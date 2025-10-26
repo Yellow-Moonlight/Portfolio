@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../blog.html">blog</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">How to win2</h1>
+                <h3 class="post-summary">A large-scale banner version of how to win, inviting viewers to fill in the blanks not with words, but with imagination.</h3>
+                <div class="post-date">2022</div>
+            </header>
+
+            <div class="post-body">
+                <figure class="figure">
+                    <img src="../../assets/images/works/how_to_win2_4color.png" alt="" loading="lazy" decoding="async">
+                    <figcaption class="img-caption">To win, lose with _______ </figcaption>
+                </figure>
+
+                <p>
+                    how to win 2 expands upon the participatory installation how to win. Instead of handwritten phrases on plywood, this version presents a monumental banner bearing the repeated sentence “To win, lose with ____.” Visitors are no longer asked to write their own answers but to imagine them. By removing the physical act of participation, the work shifts the focus from expression to reflection—from public gesture to internal dialogue. It invites viewers to consider what kind of losses, both personal and collective, might still be necessary in order to truly “win.”
+                </p>
+
+
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+    <script src="../../assets/js/image-max-height.js" defer></script>
+</body>
+
+</html>

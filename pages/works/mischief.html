@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../blog.html">blog</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">Mischief</h1>
+                <h3 class="post-summary">Mischief is a series of toy instruments for the kids.</h3>
+                <div class="post-date">2024-2025</div>
+                <h4 class="post-summary">Exhibitions and Performances</h4>
+                <h5 class="post-summary"> &lt;Modular Monday&gt;, Radio Angrezi(DE) Feb 16, 2025</h5>
+            </header>
+
+            <div class="post-body">
+
+                <figure class="figure">
+                    <img src="../../assets/images/works/mischief1.png" alt="" loading="lazy"
+                        decoding="async">
+                    <figcaption class="img-caption">entire toy</figcaption>
+                </figure>
+
+                <p>“Mischief” is a series of toy instruments created as part of research for the “sound-playground.”
+                    ‘Sound-Playground’ is the playground, that i am going to make one day, where the children’s play
+                    generates the sound.</p>
+
+                <figure class="figure">
+                    <div class="container">
+                        <iframe class="responsive-iframe"
+                            src="https://www.youtube.com/embed/sUJkwCw08is?si=pzyaZ3d7wjOoX1uA"
+                            allowfullscreen></iframe>
+                    </div>
+                    <figcaption class="img-caption">Mischief Performance as a demonstration with a perform set, at Radio
+                        Angrezi, Modular Monday. 16.Feb.2025</figcaption>
+                </figure>
+
+
+
+                <p>
+                    Last summer, while walking through a park in Essen, Germany, I witnessed a memorable scene.
+                    On the park’s pavement, children had drawn colorful pictures with chalk,
+                    and kids from different countries and language backgrounds were playing hopscotch together.
+                    Watching them, I realized that play is a powerful universal language that breaks down barriers.
+                    <br>
+                    <br>
+                    However, in a traditional playground, each ride exists independently without interacting with
+                    the others.
+                    But what if sound could connect them? Imagine if a child's position on a slide determined a note
+                    in a melody,
+                    or if the carousel's rotation acted as a rhythmic instrument. In this way, sound becomes a
+                    bridge, turning
+                    isolated rides into a collaborative musical experience. Through this Sound-Playground, I want
+                    children
+                    to discover the joy of creating something together.
+                    <br>
+                    <br>
+                    For this project, i hacked four existing toys, and designed one instrument.
+                    The toy works as a sequencer—when blocks are placed on its panel, it starts playing,
+                    and the weight of the blocks determines the notes. The Hammer bank functions as both a
+                    sample player and a looper. The rocking horse adds a reverb effect, the RC car generates
+                    synthesizer sounds,
+                    and the airplane creates bass sounds.
+                </p>
+
+                <h2 id="Hardware">Hardware and software</h2>
+
+                <p>
+                    Mischief is consisted with 5 toys.
+                    (1) The wooden block play panel, (2) hammer bank, (3) RC car, (4) Rocking horse, (5) Wooden
+                    airplane.
+                    <br>
+                    <br>
+                    The first three toys are connected directly to master ESP32 through wire.
+                    And Rocking horse and wooden airplane have each slave ESP32 and they are connected to master
+                    ESP32 through bluetooth.
+                    <br>
+                    <br>
+                    Master ESP32 is connected with Laptop and send the each sensor value to Max for Live through
+                    serial communication.
+                    With this signal Max for Live control and play the sounds.
+                    <br>
+                    <br>
+                    I am going to make this project open source. You can check and download whole code include other max
+                    for live device at <a
+                        href="https://github.com/Yellow-Moonlight/Mischief/tree/main">https://github.com/Yellow-Moonlight/Mischief/tree/main</a>
+
+                <h2>The wooden block play panel</h2>
+                <p>The wooden block play panel was designed and built to function as a 8 step sequencer.
+                    Wooden blocks from existing toys were used. A Force Sensing Resistor was employed to measure
+                    pressure,
+                    and a shift register (CD4051BE) was utilized to reduce the number of pins needed for the
+                    microcontroller.</p>
+
+                <figure class="figure">
+                    <img src="../../assets/images/works/mischief2.png" alt="" loading="lazy"
+                        decoding="async">
+                    <figcaption class="img-caption">wooden block play panel</figcaption>
+                </figure>
+
+                <h2>The Hammer Bank</h2>
+                <p>The Hammer Bank has been modified to operate by installing a tact switch under the wooden pillar.
+                    It worked as Sample player and looper.</p>
+
+                <figure class="figure">
+                    <img class="img-vertical" src="../../assets/images/works/mischief3.png" alt=""
+                        loading="lazy" decoding="async">
+                    <figcaption class="img-caption">the hammer bank</figcaption>
+                </figure>
+
+                <h2>The RC Car</h2>
+                <p>The RC car analyzed the signals from the controller's IC chip and sent them through a comparator
+                    when the buttons were triggered,
+                    then transmitted them to the microcontroller for use.
+                </p>
+
+                <figure class="figure">
+                    <img class="img-vertical" src="../../assets/images/works/mischief6.png" alt=""
+                        loading="lazy" decoding="async">
+                    <figcaption class="img-caption">the RC car
+</figcaption>
+                </figure>
+
+                <h2>The rocking horse and Airplane toy</h2>
+                    <p>The rocking horse and airplane toy used a gyroscope sensor (MPU 6050) and transmitted the data to
+                        the main microcontroller (Master ESP32) via Bluetooth from the slave ESP32.
+                    </p>
+
+                    <figure class="figure">
+                    <img src="../../assets/images/works/mischief4.png" alt=""
+                        loading="lazy" decoding="async">
+                    <figcaption class="img-caption">the rocking horse</figcaption>
+                </figure>
+
+                <figure class="figure">
+                    <img src="../../assets/images/works/mischief5.png" alt=""
+                        loading="lazy" decoding="async">
+                    <figcaption class="img-caption">airtplane toy</figcaption>
+                </figure>
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+    <script src="../../assets/js/image-max-height.js" defer></script>
+</body>
+
+</html>

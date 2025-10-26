@@ -114,8 +114,17 @@ body {
 .news-item {
     margin-bottom: 2rem;
     padding: 1rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid oklch(81.719% 0.00009 271.152);
 }
+
+.news-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    max-height: none;
+    object-fit: contain;
+}
+
 
 
 
@@ -172,6 +181,7 @@ body {
 .post-date {
     color: #666;
     font-size: 0.9rem;
+    margin-bottom: 1rem;
 }
 
 .post-body {

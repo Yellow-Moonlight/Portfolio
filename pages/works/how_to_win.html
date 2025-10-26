@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="../../css/style.css">
+</head>
+
+<body>
+    <nav class="nav-container">
+        <div class="nav-inner">
+            <a class="site-title" href="/index.html">Seongjoo Moon</a>
+            <button class="hamburger">☰</button>
+            <ul class="nav-list">
+                <li><a href="../about.html">about</a></li>
+                <li><a href="../news.html">news</a></li>
+                <li><a href="../works.html">works</a></li>
+                <li><a href="../rabbit-hole.html">rabbit hole</a></li>
+                <li><a href="../blog.html">blog</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <article class="post-content">
+            <header class="post-header">
+                <h1 class="post-title">How to win</h1>
+                <h3 class="post-summary">A participatory work inviting people to complete the phrase “To win, lose 
+                    _______ ,” exploring the political and collective meaning of loss.</h3>
+                <div class="post-date">2022</div>
+            </header>
+
+            <div class="post-body">
+                <figure class="figure">
+                    <img src="../../assets/images/works/how_to_win_1_4color.png" alt="" loading="lazy" decoding="async">
+                    <figcaption class="img-caption">Finally, lose <u>with joy</u></figcaption>
+                </figure>
+
+                <p>
+                    how to win is a participatory installation in which visitors are asked to fill in the blank of the
+                    phrase “To win, you must lose ____,” written repeatedly on plywood panels. The work questions the
+                    dominant narratives of competition and success, suggesting that losing can also be an act of
+                    solidarity. Rather than celebrating individual victory, it reflects on the value of shared
+                    defeat—the idea that through the experience of losing together, we might someday learn how to truly
+                    win.
+                </p>
+
+                <figure class="figure figure--grid">
+                    <div class="img-grid">
+                        <img src="../../assets/images/works/how_to_win_5_4color.png" alt=""
+                            loading="lazy" decoding="async">
+                            <img src="../../assets/images/works/how_to_win_6_4color.png" alt=""
+                            loading="lazy" decoding="async">
+                    </div>
+                </figure>
+                <figure class="figure figure--grid">
+                    <div class="img-grid">
+                        <img src="../../assets/images/works/how_to_win_7_4color.png" alt=""
+                            loading="lazy" decoding="async">
+                            <img src="../../assets/images/works/how_to_win_8_4color.png" alt=""
+                            loading="lazy" decoding="async">
+                    </div>
+                </figure>
+
+        </article>
+    </main>
+
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('.nav-list').classList.toggle('active');
+        });
+    </script>
+    <script src="../../assets/js/image-max-height.js" defer></script>
+</body>
+
+</html>
