@@ -2,6 +2,7 @@
     --color-primary: oklch(2% 0.0 0);
     --color-bg: oklch(98.00% 0.0 0);
     --color-sub: oklch(50% 0.27 263);
+    --color-sub2 : oklch(50%, 0, 0);
     --max-img-width: 100%;
 }
 
@@ -21,6 +22,7 @@ h6 {
 }
 
 body {
+    font-weight: normal;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     line-height: 1.6;
     color: var(--color-primary);
@@ -55,6 +57,18 @@ body {
     font-size: 1rem;
 }
 
+.nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    box-sizing: border-box;
+}
+
 
 .hamburger {
     display: none;
@@ -65,7 +79,7 @@ body {
 
 .site-title {
     text-decoration: none;
-    color: #000;
+    color: var(--color-primary);
     font-weight: 600;
     font-size: 1.05rem;
 }
@@ -73,10 +87,8 @@ body {
 /* Main content */
 .main-content {
     margin: 4rem auto;
-    /* top spacing and center horizontally */
     padding: 1rem;
     max-width: 900px;
-    /* unify content width across pages */
 }
 
 /* List layout */
@@ -87,12 +99,12 @@ body {
 
 .content-list li {
     padding: 1rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-bg);
 }
 
 .content-list a {
     text-decoration: none;
-    color: #000;
+    color: var(--color-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -103,20 +115,14 @@ body {
     font-size: 0.9rem;
 }
 
-/* News feed: use full width of .main-content so left/right gaps match nav/title */
-.news-feed {
-    max-width: none;
-    width: 100%;
-    margin: 0;
-    box-sizing: border-box;
-}
+/* News feed */
 
 .news-item {
     margin-bottom: 2rem;
     padding: 1rem 0;
     border-bottom: 1px solid oklch(81.719% 0.00009 271.152);
 }
-
+.post-body img, 
 .news-item img {
     width: 100%;
     height: auto;
@@ -125,23 +131,7 @@ body {
     object-fit: contain;
 }
 
-
-
-
-/* Unified post/about styles (moved from inline <style> in pages) */
-.nav-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    /* move nav padding here so it aligns with .main-content */
-    box-sizing: border-box;
-}
-
+.news-content
 .about-content,
 .post-content {
     max-width: none;
@@ -159,27 +149,24 @@ body {
     margin-top: 3rem;
 }
 
-.contact-info a,
-.post-source a {
-    color: #000;
+.contact-info a {
+    color: var(--color-primary);
     text-decoration: none;
-    border-bottom: 1px solid #000;
+    border-bottom: 1px solid var(--color-primary);
 }
 
 .post-header {
     margin-bottom: 2rem;
 }
 
-.post-title {
-    margin-bottom: 1rem;
-}
 
+.post-title, 
 .post-summary {
     margin-bottom: 1rem;
 }
 
 .post-date {
-    color: #666;
+    color: var(--color-sub2);
     font-size: 0.9rem;
     margin-bottom: 1rem;
 }
@@ -198,33 +185,11 @@ body {
     margin-top: 2rem;
 }
 
-.work-details {
-    margin: 2rem 0;
-}
-
-.work-details dt {
-    font-weight: normal;
-    margin-top: 1rem;
-}
-
-.work-details dd {
-    margin-left: 0;
-    color: #666;
-}
-
 blockquote {
     margin: 2rem 0;
     padding-left: 1rem;
-    border-left: 2px solid #000;
+    border-left: 2px solid var(--color-primary);
     font-style: italic;
-}
-
-.post-body img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: none;
-    object-fit: contain;
 }
 
 
@@ -235,7 +200,7 @@ figure figcaption {
     text-align: center;
     font-size: 0.9rem;
     font-style: italic;
-    color: #666;
+    color: var(--color-sub2);;
     margin: 0.5rem;
 }
 
@@ -296,36 +261,6 @@ a:hover{
     }
 }
 
-.video-container {
-    max-width: 400px;
-    margin: 2rem 0;
-    position: relative;
-    padding-bottom: 56.25%;
-    /* 16:9 비율 */
-    height: 0;
-    overflow: hidden;
-}
-
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 0;
-}
-
-.post-source {
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-}
-
-.tags {
-    margin-top: 3rem;
-    color: #666;
-    font-size: 0.9rem;
-}
-
 /*---------------
   Responisve Youtube
   ------------*/
@@ -371,7 +306,7 @@ a:hover{
         left: 0;
         width: 100%;
         align-items: flex-end;
-        background: #fff;
+        background: var(--color-bg);
         padding: 1rem;
     }
 

@@ -61,4 +61,8 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
+
+    document.querySelector('.hamburger').addEventListener('click', () => {
+        document.querySelector('.nav-list').classList.toggle('active');
+    });
 });
