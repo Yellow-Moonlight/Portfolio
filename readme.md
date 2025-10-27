@@ -1,4 +1,4 @@
-# Seongjoo Moon's Low-Carbon Portfolio
+# Is it possible to have a low-weight portfolio website for an artist?
 
 ## 1. Introduction
 
@@ -8,9 +8,9 @@ This website started with a simple question: Is it possible to have a low-weight
 
 My goal is to reduce the carbon footprint caused whenever someone visits my portfolio. In the long run, I hope to even host this website entirely on solar power.
 
-Most art portfolios online are heavy. Artists take high-resolution photos to document their work well, then upload them online so people can see them in detail. I’ve always felt a little conflicted about this. The images we see on the web are never the same as experiencing the artwork in real life, and they can only convey part of what the work is.
+Most art portfolios online are heavy. Artists take high-resolution photos to document their work well, then upload them online so people can see them in detail. I’ve felt a little conflicted about this. The images we see on the web are never the same as experiencing the artwork in real life, and they can only convey part of what the work is.
 
-I’m not sure if this is the “right” choice, but I wanted to give it a try. Art is all about visual images, and it might feel counterintuitive to sacrifice some of that in a portfolio—but sometimes letting go of perfection can be a meaningful experiment.
+I’m not sure if this is the “right” choice, but I wanted to give it a try. Art is usually about visual images, and it might feel counterintuitive to sacrifice some of that in a portfolio—but sometimes letting go of perfection can be a meaningful experiment.
 
 ## 2. Key Features
 
