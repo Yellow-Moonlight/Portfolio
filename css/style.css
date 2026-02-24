@@ -1,15 +1,15 @@
 :root {
-    --color-primary: oklch(2% 0.0 0);
-    --color-bg: oklch(98.00% 0.0 0);
-    --color-sub: oklch(50% 0.27 263);
-    --color-sub2 : oklch(50%, 0, 0);
-    --max-img-width: 100%;
+  --color-primary: oklch(2% 0 0);
+  --color-bg: oklch(98% 0 0);
+  --color-sub: oklch(50% 0.27 263);
+  --color-sub2: oklch(50%, 0, 0);
+  --max-img-width: 100%;
 }
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 h1,
@@ -18,247 +18,241 @@ h3,
 h4,
 h5,
 h6 {
-    font-weight: normal;
+  font-weight: normal;
 }
 
 body {
-    font-weight: normal;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    color: var(--color-primary);
-    background-color: var(--color-bg);
+  font-weight: normal;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  line-height: 1.6;
+  color: var(--color-primary);
+  background-color: var(--color-bg);
 }
 
 /* Navigation */
 .nav-container {
-    padding: 0;
-    position: fixed;
-    width: 100%;
-    top: 0;
-    background-color: var(--color-bg);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
+  padding: 0;
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background-color: var(--color-bg);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 }
 
 .nav-list {
-    display: flex;
-    justify-content: flex-end;
-    list-style: none;
-    gap: 2rem;
+  display: flex;
+  justify-content: flex-end;
+  list-style: none;
+  gap: 2rem;
 }
 
-
 .nav-list a {
-    text-decoration: none;
-    color: var(--color-primary);
-    font-size: 1rem;
+  text-decoration: none;
+  color: var(--color-primary);
+  font-size: 1rem;
 }
 
 .nav-inner {
-    max-width: 900px;
-    margin: 0 auto;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: 1rem;
-    box-sizing: border-box;
+  max-width: 900px;
+  margin: 0 auto;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-
 .hamburger {
-    display: none;
-    background: none;
-    border: none;
-    cursor: pointer;
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 .site-title {
-    text-decoration: none;
-    color: var(--color-primary);
-    font-weight: 600;
-    font-size: 1.05rem;
+  text-decoration: none;
+  color: var(--color-primary);
+  font-weight: 600;
+  font-size: 1.05rem;
 }
 
 /* Main content */
 .main-content {
-    margin: 4rem auto;
-    padding: 1rem;
-    max-width: 900px;
+  margin: 4rem auto;
+  padding: 1rem;
+  max-width: 900px;
 }
 
 /* List layout */
 .content-list {
-    list-style: none;
-    margin: 2rem 0;
+  list-style: none;
+  margin: 2rem 0;
 }
 
 .content-list li {
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--color-bg);
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-bg);
 }
 
 .content-list a {
-    text-decoration: none;
-    color: var(--color-primary);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  text-decoration: none;
+  color: var(--color-primary);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .content-list .date {
-    color: #666;
-    font-size: 0.9rem;
+  color: #666;
+  font-size: 0.9rem;
 }
 
 /* News feed */
 
 .news-item {
-    margin-bottom: 2rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid oklch(81.719% 0.00009 271.152);
+  margin-bottom: 2rem;
+  padding: 1rem 0;
+  border-bottom: 1px solid oklch(81.719% 0.00009 271.152);
 }
-.post-body img, 
+.post-body img,
 .news-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    max-height: none;
-    object-fit: contain;
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: none;
+  object-fit: contain;
 }
 
-.news-content
-.about-content,
+.news-content .about-content,
 .post-content {
-    max-width: none;
-    width: 100%;
-    margin: 0;
-    box-sizing: border-box;
-    /* ensure padding doesn't affect overall width */
+  max-width: none;
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
+  /* ensure padding doesn't affect overall width */
 }
 
 .about-section {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
 .contact-info {
-    margin-top: 3rem;
+  margin-top: 3rem;
 }
 
 .contact-info a {
-    color: var(--color-primary);
-    text-decoration: none;
-    border-bottom: 1px solid var(--color-primary);
+  color: var(--color-primary);
+  text-decoration: none;
+  border-bottom: 1px solid var(--color-primary);
 }
 
 .post-header {
-    margin-bottom: 2rem;
+  margin-bottom: 2rem;
 }
 
-
-.post-title, 
+.post-title,
 .post-summary {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .post-date {
-    color: var(--color-sub2);
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
+  color: var(--color-sub2);
+  font-size: 0.9rem;
+  margin-bottom: 1rem;
 }
 
 .post-body {
-    margin-top: 2rem;
-    line-height: 1.6;
+  margin-top: 2rem;
+  line-height: 1.6;
 }
 
 .post-body p {
-    margin-top: 1rem;
-    margin-bottom: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
 }
 
 .post-body h2 {
-    margin-top: 2rem;
+  margin-top: 2rem;
 }
 
 blockquote {
-    margin: 2rem 0;
-    padding-left: 1rem;
-    border-left: 2px solid var(--color-primary);
-    font-style: italic;
+  margin: 2rem 0;
+  padding-left: 1rem;
+  border-left: 2px solid var(--color-primary);
+  font-style: italic;
 }
-
-
 
 /* Image caption styling: centered, small, italic */
 .img-caption,
 figure figcaption {
-    text-align: center;
-    font-size: 0.9rem;
-    font-style: italic;
-    color: var(--color-sub2);;
-    margin: 0.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--color-sub2);
+  margin: 0.5rem;
 }
 
 .img-vertical {
-    max-width: 50%;
-    margin: 0 auto;
+  max-width: 50%;
+  margin: 0 auto;
 }
 
 /* Optional figure wrapper reset to remove default margins */
 figure {
-    margin: 0;
+  margin: 0;
 }
 
 /* Image grid layout for multiple images in a figure */
 .figure--grid {
-    display: grid;
-    gap: 1rem;
-    margin: 2rem 0;
+  display: grid;
+  gap: 1rem;
+  margin: 2rem 0;
 }
 
 /* Grid layout for images */
 .figure--grid .img-grid {
-    display: grid;
-    gap: 1rem;
-    margin: 0;
+  display: grid;
+  gap: 1rem;
+  margin: 0;
 }
 
 /* By default (mobile), images stack vertically */
 .figure--grid img {
-    width: 100%;
-    height: auto;
-    margin: 0;
-    /* Override default img margin */
+  width: 100%;
+  height: auto;
+  margin: 0;
+  /* Override default img margin */
 }
 
 /* Caption always spans full width below images */
 .figure--grid figcaption {
-    grid-column: 1 / -1;
-    margin-top: 1rem;
+  grid-column: 1 / -1;
+  margin-top: 1rem;
 }
 
-a:hover{
-    color: var(--color-sub);
+a:hover {
+  color: var(--color-sub);
 }
 
-::selection { 
-    color: var(--color-bg); 
-    background-color: var(--color-primary);
+::selection {
+  color: var(--color-bg);
+  background-color: var(--color-primary);
 }
-
-
 
 /* On desktop, create a horizontal grid for images */
 @media (min-width: 768px) {
-    .figure--grid .img-grid {
-        grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-        align-items: start;
-    }
+  .figure--grid .img-grid {
+    grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    align-items: start;
+  }
 }
 
 /*---------------
@@ -266,75 +260,73 @@ a:hover{
   ------------*/
 
 .container {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    padding-top: 56.25%;
-    /* 16:9 Aspect Ratio */
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding-top: 56.25%;
+  /* 16:9 Aspect Ratio */
 }
 
 .containervertical {
-    position: relative;
-    width: 56.25%;
-    overflow: hidden;
-    padding-top: 100%;
-    /* 16:9 Aspect Ratio */
-    margin: 0 auto;
-
+  position: relative;
+  width: 56.25%;
+  overflow: hidden;
+  padding-top: 100%;
+  /* 16:9 Aspect Ratio */
+  margin: 0 auto;
 }
 
 /* Then style the iframe to fit in the container div with full height and width */
 .responsive-iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
-
 
 /* Mobile styles */
 @media (max-width: 768px) {
-    .nav-list {
-        display: none;
-        flex-direction: column;
-        position: fixed;
-        top: 3rem;
-        left: 0;
-        width: 100%;
-        align-items: flex-end;
-        background: var(--color-bg);
-        padding: 1rem;
-    }
+  .nav-list {
+    display: none;
+    flex-direction: column;
+    position: fixed;
+    top: 3rem;
+    left: 0;
+    width: 100%;
+    align-items: flex-end;
+    background: var(--color-bg);
+    padding: 1rem;
+  }
 
-    .nav-list.active {
-        display: flex;
-    }
+  .nav-list.active {
+    display: flex;
+  }
 
-    .hamburger {
-        display: block;
-    }
+  .hamburger {
+    display: block;
+  }
 
-    /* Make hamburger larger and easier to tap on mobile */
-    .hamburger {
-        font-size: 1.6rem;
-        padding: 0.25rem 0.5rem;
-    }
+  /* Make hamburger larger and easier to tap on mobile */
+  .hamburger {
+    font-size: 1.6rem;
+    padding: 0.25rem 0.5rem;
+  }
 
-    /* Right-align menu text on mobile */
-    .nav-list a {
-        text-align: right;
-        display: block;
-        width: 100%;
-        padding: 0.5rem 0;
-    }
+  /* Right-align menu text on mobile */
+  .nav-list a {
+    text-align: right;
+    display: block;
+    width: 100%;
+    padding: 0.5rem 0;
+  }
 
-    .img-vertical {
-        max-width: 100%;
-    }
+  .img-vertical {
+    max-width: 100%;
+  }
 }
 
 /* Lightbox Modal Styles */
@@ -356,6 +348,6 @@ a:hover{
   max-width: 90vw;
   max-height: 90vh;
   object-fit: contain;
-  box-shadow: 0 0 25px rgba(0,0,0,0.5);
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.5);
   cursor: default;
 }
