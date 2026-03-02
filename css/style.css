@@ -31,6 +31,15 @@ body {
   background-color: var(--color-bg);
 }
 
+a {
+  color: var(--color-sub);
+  text-decoration: none;
+}
+
+a:visited {
+  color: var(--color-sub);
+}
+
 /* Navigation */
 .nav-container {
   padding: 0;
@@ -79,7 +88,7 @@ body {
 
 .site-title {
   text-decoration: none;
-  color: var(--color-primary);
+  color: var(--color-primary) !important;
   font-weight: 600;
   font-size: 1.05rem;
 }

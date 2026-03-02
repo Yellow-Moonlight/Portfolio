@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/component.js" defer></script>
+  </head>
+
+  <body>
+    <main-nav></main-nav>
+
+    <main class="main-content">
+      <article class="post-content">
+        <header class="post-header">
+          <h1 class="post-title">프로젝트를 시작하며</h1>
+          <div class="post-date">Mar 1, 2026</div>
+        </header>
+
+        <div class="post-body">
+          <p>
+            이 프로젝트는 YPP를 위한 사운드 전용 개발보드를 만들기 위한
+            프로젝트이다. 이 프로젝트는 Dennis P Paul의
+            <a href="https://github.com/Klangstrom">Klangstrom</a>으로부터 특히
+            많은 영향을 받았다. Klangstrom역시 흥미로운 보드이지만, 나에게는
+            TFT디스플레이가 필요하지 않고, 많은 GPIO핀, 특히 ADC핀이 필요했따.
+            또한 장기적으로 다양한 장난감을 같은 보드 위에서 개발해나갈 필요를
+            느꼈다. 틴지나 데이지시드 역시 좋은 선택지가 될 수 있겠지만 다른
+            회사의 보드에 의존하고 싶지 않았다(게다가 틴지는 오픈소스가
+            아니라서, 언젠가 이 장난감들을 판매하게 될 경우 틴지에서 칩을
+            구매해야 하는 문제가 있다).<br /><br />
+
+            아래는 현재까지 결정한 내용들이다.<br /><br />
+
+            MCU: STM32H723ZGT(클랑스트롬 Panda와 같은)<br />
+            패키지: LQFP144<br />
+            외부 메모리 : 6mb sdram(FMC) / klangstrom은 octo-spi방식을 사용하고
+            daisy seed는 fmc방식을 사용한다. 수급이 쉽고 비교적 저렴하게 칩을
+            구할 수 있는 FMC방식을 선택했다. 비록 핀이 많이 투자되기는 하지만,
+            TFT디스플레이를 포기했기 때문에 여전히 많은 gpio핀이 남아있다. 또한
+            부족한 GPIO핀은 시프트 레지스터나 매트릭스 방식으로 확장 가능하다.
+            <br />
+            오디오 인터페이스: SAI<br />
+            오디오 코덱 : wm8960
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      document.querySelector(".hamburger").addEventListener("click", () => {
+        document.querySelector(".nav-list").classList.toggle("active");
+      });
+    </script>
+    <script src="/js/main.js" defer></script>
+  </body>
+</html>

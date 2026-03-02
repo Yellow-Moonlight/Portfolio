@@ -14,9 +14,20 @@ class MainNav extends HTMLElement {
                     <li><a href="/pages/blog.html">blog</a></li>
                 </ul>
             </div>
-        </nav>
+              </nav>
         `;
+
+    // 햄버거 메뉴 동작 코드
+    const hamburger = this.querySelector(".hamburger");
+    const navList = this.querySelector(".nav-list");
+    if (hamburger) {
+      hamburger.addEventListener("click", () => {
+        navList.classList.toggle("active");
+      });
+    }
   }
 }
 
-customElements.define("main-nav", MainNav);
+if (!customElements.get("main-nav")) {
+  customElements.define("main-nav", MainNav);
+}
