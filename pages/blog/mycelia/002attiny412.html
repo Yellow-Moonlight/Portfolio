@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/component.js" defer></script>
+  </head>
+
+  <body>
+    <main-nav></main-nav>
+
+    <main class="main-content">
+      <article class="post-content">
+        <header class="post-header">
+          <h1 class="post-title">Attiny 412</h1>
+          <div class="post-date">Mar 30, 2026</div>
+        </header>
+
+        <div class="post-body">
+          <p>
+            <a
+              href="https://ww1.microchip.com/downloads/en/DeviceDoc/40001911A.pdf"
+              target="_blank"
+              >datasheet</a
+            ><br />
+            Mycelia의 기둥 컨트롤러로는 Attiny412를 사용하기로 했다. DAC를
+            이용해 1wire로 기둥별 음계와 악기를 지정해줄 수 있을 것이라고
+            생각했기 때문이다. Attiny412에 코드를 업로드 하기 위한 환경으로는
+            Visual Studio Code + Platform IO를 사용한다. 프레임워크를 아두이노로
+            선택하면 아두이노 언어를 그대로 사용할 수 있다. CP2102 UPDI업로더가
+            필요했다. <br />
+            쓰루홀 버전이 없다. SOIC8 to DIP 기판을 사서 하나하나 납땜해줬다.
+            SOIC보드에 먼저 다리 하나 자리에만 납을 묻혀준 뒤, 칩을 올리고 납을
+            다시 녹여 칩을 기판 위에 고정한다. 그 다음 나머지 다리들을
+            납땜해주면 된다. <br />
+            업로드 하기 위해 attiny412와 updi 업로드를 연결한다. <br />
+            1번 - 3.3v <br />
+            8번 - GND <br />
+            6번 - RX와는 직결, 1k ohm 통과시켜서 TX <br />
+            업로드를 위해 만능기판에 따로 소켓과 핀 등을 납땜해서 업로드용
+            기판을 만들었다. 브레드보드에 꽂고 업로드하려니 자꾸 전선이 빠지기도
+            하는 문제들이 생겨서. <br />
+            6번 핀은 안 쓰는 게 좋을 것 같다. 사실 확인은 못해봤지만, 6번핀을
+            사용하는 코드를 업로드하면, UPDI방식으로 다시 업로드를 할 수 없게
+            된다고 해서. <br />
+            2번핀은 8채널 DAC인데, 기본 설정에서는 255일때, 그러니까 최대 전압이
+            0.5볼트정도이다. DACReference(INTERNAL2V5); 코드를 이용해서 최대
+            전압을 2.5볼트로 올려줄 수 있다.<br />
+            자꾸 업로드에 뭔가 문제가 발생한다. 이유는 모르겠음. setup에서
+            delay(500)정도를 걸어주면 좀 덜 고장난다.
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      document.querySelector(".hamburger").addEventListener("click", () => {
+        document.querySelector(".nav-list").classList.toggle("active");
+      });
+    </script>
+    <script src="/js/main.js" defer></script>
+  </body>
+</html>

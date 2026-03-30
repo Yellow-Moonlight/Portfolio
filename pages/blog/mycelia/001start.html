@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="/css/style.css" />
+    <script src="/js/component.js" defer></script>
+  </head>
+
+  <body>
+    <main-nav></main-nav>
+
+    <main class="main-content">
+      <article class="post-content">
+        <header class="post-header">
+          <h1 class="post-title">프로젝트 개요</h1>
+          <div class="post-date">Mar 30, 2026</div>
+        </header>
+
+        <div class="post-body">
+          <p>
+            Mycelia is an interactive, modular toy system designed for children
+            to explore sound through physical play and collaboration.
+            <br />
+            Inspired by the Mycorrhizal network, the project translates
+            biological networking into a physical, interactive soundscape.
+            <br />
+            벌집 모양의 베이스 플레이트(4-5-6-7-6-5-4 / 총 37개 칸) 위에 빛의
+            신호가 유기체처럼 퍼져나가고 충돌하는 인터랙티브 사운드/라이트
+            인스톨레이션
+            <br />
+            사용자는 육각기둥 블록을 배치하여 자신만의 신호 네트워크를 설계하고,
+            이에 따라 빛과 소리가 흐른다.
+            <br />
+            <br />
+
+            <b>Core Play Logic</b><br />
+            배치 및 등록: 육각 기둥을 베이스에 꽂으면 1초간의 안정화를 거친 뒤,
+            해당 위치에 고유 ID가 등록된다.<br />
+            신호 발생: 기둥을 터치하면 그 지점에서 빛의 파동이 시작된다.<br />
+            박자 기반 전파: 파동은 설정된 BPM에 맞춰 이웃한 육각기둥으로 한 칸씩
+            전파된다.<br />
+            정면 충돌 및 소멸: 두 신호가 서로 부딪히면, 그 지점에서 신호는
+            상쇄되어 사라진다.<br />
+            <br />
+
+            <b>Technical Framework: Hardware</b>
+            <br />
+            베이스 플레이트
+            <br />
+            틴지로 테스트해본 뒤, Klangstrom로 이식, 그 다음 자체 개발 Umparang
+            보드로 이식<br />
+            입력 확장: 16ch analog Multiplexer CD74HC4067이용. 총 37개 블록 전압
+            신호 순차적으로 스캔<br />
+            출력 확장: 8ch shift resistor 74HC595 5개 병렬로 연결. 37개 블록에
+            개별 디지털 트리거 신호 전달<br />
+            커넥터: 4pin round magnetic pogo connector
+            <br />
+            육각 기둥 블록<br />
+            컨트롤러: Attiny412
+            <br />
+            2번핀 8채널 DAC - 개별 아이디 전달(연결 안 되어 있을 때: 0v/ 총 6개
+            음계, 3개 악기, 18개 ID / ID별로 11+ID*13을 DAC값으로 내보냄,
+            터치센서 HIGH되면 최고전압 255(약 2.5v) 출력)<br />
+            3번핀 digital, INPUT - 메인보드로부터 led 점멸 신호 in<br />
+            4번핀 digital, INPUT - TTP223 터치센서, 터치 들어오면 high<br />
+            5번핀 PWM, OUTPUT - LED점멸<br />
+            <br />
+            <b>Technical Framework: Software</b>
+            <br />
+            통신 및 인식 프로토콜
+            <br />
+            전압스케일링 필요: Attiny412 DAC 최대 전압 2.5v / 틴지의 ADC는 1023
+            - 3.3v임. 역산 필요.<br />
+            연결 안 되어 있을 때: 틴지로 0v<br />
+            연결 되면, attiny 2번 핀으로부터 나오는 값 10번 받아 평균 내서 ID
+            계산<br />
+            그리드 시스템 및 알고리즘<br />
+            이웃 맵핑: 육각형 기둥의 인접 셀 알고리즘은 사전에 37개 셀의 인접
+            관계를 neighbors[37][6] 상수로 정의하여 연산 속도 극대화<br />
+            박자 엔진: millis활용하여 특정 박자마다 wave 데이터 업데이트<br />
+            파동 관리: 현재 활성화도니 파동 위치와 직전 위치 추적하여 흐름충돌
+            여부 계산<br />
+          </p>
+        </div>
+      </article>
+    </main>
+
+    <script>
+      document.querySelector(".hamburger").addEventListener("click", () => {
+        document.querySelector(".nav-list").classList.toggle("active");
+      });
+    </script>
+    <script src="/js/main.js" defer></script>
+  </body>
+</html>
