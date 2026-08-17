@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/technical_component.js" defer></script>
+  </head>
+
+  <body>
+    <main-nav></main-nav>
+
+    <main class="main-content">
+      <article class="post-content">
+        <header class="post-header">
+          <h1 class="post-title">Mycelia</h1>
+          <div class="post-date">2026</div>
+          <h4 class="post-summary">Attiny412, Teensy4.1, 3D printing, Fusion, PCB design</h4>
+        </header>
+
+        <div class="post-body">
+            <!-- 설명 -->
+          <p>
+            Mycelia is a synthesizer inspired by mycorrhizal networks. It uses the ATtiny412 for each pillar module and the Teensy 4.1 for the main controller. The ATtiny412 and Teensy are connected through a custom-designed pogo connector system and communicate via analog voltage levels. This allows the Teensy to identify the color and height of each pillar and play different sounds accordingly. Users can control the sound using the knobs and buttons on each color panel. When a pillar stands independently, the sound plays only once, but if there are adjacent pillars, it randomly transmits the signal to the neighboring pillars.<br>The model was designed using Fusion, 3D printed, and then assembled.<br>
+            This work is partly sponsored by HEC.
+          </p>
+          <!-- youtube 영상 -->
+          <figure class="figure">
+            <div class="container">
+              <iframe
+                class="responsive-iframe"
+                src="https://www.youtube.com/embed/-OwsT_Dy1tI?si=0n0LU5LutgRC-sLs&amp;start=2221"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <figcaption class="img-caption">
+              Performance at Chaos Office, HfK Bremen
+            </figcaption>
+          </figure>
+
+          <!-- 사진 -->
+          <figure class="figure">
+            <img
+              src="../../assets/images/technical/mycelia_1.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+<figcaption class="img-caption">main module </figcaption>
+
+          </figure>
+
+          <!-- 사진 세로-->
+          <figure class="figure">
+            <img
+              class="img-vertical"
+              src="../../assets/images/technical/mycelia_2.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption class="img-caption">control knob, button and indicate LED</figcaption>
+          </figure>
+          <!-- 사진 세로-->
+          <figure class="figure">
+            <img
+              class="img-vertical"
+              src="../../assets/images/technical/mycelia_3.jpg"
+              alt=""
+              loading="lazy"
+              decoding="async"
+            />
+            <figcaption class="img-caption">pillar modules</figcaption>
+          </figure>
+
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

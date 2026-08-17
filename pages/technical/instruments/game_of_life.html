@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Seongjoo Moon - Mycelia Simulator (Game of Life)</title>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <style>
+    body { background: #1a1a1a; margin: 0; padding: 0; }
+    #mycelia-container {
+      display: flex; flex-direction: column; align-items: center;
+      color: #fff; font-family: sans-serif; padding: 20px 0;
+    }
+    #mycelia-container h2 { margin: 10px 0 5px 0; font-size: 1.2rem; }
+    #canvas-container { margin-bottom: 10px; }
+    
+    .panel {
+      width: 95%; max-width: 500px; background: #333; border-radius: 8px; 
+      padding: 10px; box-sizing: border-box; margin-bottom: 10px;
+    }
+    .action-btns { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+    .action-btn {
+      flex: 1; padding: 12px; font-weight: bold; border: none; border-radius: 6px;
+      background: #555; color: white; cursor: pointer; font-size: 1rem; user-select: none;
+      transition: background 0.2s;
+    }
+    .action-btn.active { background: #4CAF50; }
+    
+    .util-btn {
+      flex: 1; padding: 10px; font-weight: bold; border: none; border-radius: 6px;
+      color: white; cursor: pointer; font-size: 0.85rem; user-select: none;
+    }
+    .btn-rand-mount { background: #607D8B; }
+    .btn-rand-synth { background: #9C27B0; }
+    .btn-clear { background: #F44336; }
+    .btn-save { background: #008CBA; }
+    .btn-load { background: #FF9800; }
+
+    .global-settings { border-top: 1px solid #444; border-bottom: 1px solid #444; padding: 10px 0; margin-bottom: 10px; }
+    .slider-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .slider-row label { width: 35%; font-size: 0.9rem; }
+    .slider-row input[type=range] { width: 50%; }
+    .slider-row span { width: 15%; text-align: right; font-size: 0.8rem; }
+    
+    .id-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .id-btn {
+      padding: 10px 0; border: 2px solid transparent; border-radius: 6px;
+      font-weight: bold; color: #000; cursor: pointer; text-align: center; user-select: none;
+    }
+    .id-btn.selected { border-color: #fff; transform: scale(0.95); }
+    
+    .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+    .tab-btn {
+      flex: 1; padding: 8px; border: none; cursor: pointer; font-weight: bold;
+      border-radius: 4px; opacity: 0.5; color: #000; user-select: none;
+    }
+    .tab-btn.active { opacity: 1; border: 2px solid white; }
+    
+    .synth-controls { display: none; }
+    .synth-controls.active { display: block; }
+  </style>
+</head>
+
+<body>
+  <div id="mycelia-container">
+    <h2>Game of Life Sequencer</h2>
+    <div id="canvas-container"></div>
+
+    <div class="panel">
+      <div class="action-btns">
+        <button id="btn-play" class="action-btn" onclick="togglePlay()">▶ Play</button>
+      </div>
+
+      <div class="action-btns">
+        <button class="util-btn btn-save" onclick="savePreset()">💾 Save Preset</button>
+        <button class="util-btn btn-load" onclick="triggerLoad()">📂 Load Preset</button>
+        <input type="file" id="file-input" style="display: none;" accept=".json" onchange="loadPreset(event)">
+      </div>
+
+      <div class="action-btns">
+        <button class="util-btn btn-rand-mount" onclick="randomMount()">Rand Mount</button>
+        <button class="util-btn btn-rand-synth" onclick="randomizeSynths()">Rand Synths</button>
+        <button class="util-btn btn-clear" onclick="clearAll()">Clear All</button>
+      </div>
+      
+      <div class="global-settings">
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #4CAF50;">Global BPM</label>
+          <input type="range" id="bpm-slider" min="60" max="240" step="1" value="160">
+          <span id="bpm-value" style="font-weight: bold; color: #4CAF50;">160</span>
+        </div>
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #FF9800;">Birth Prob.</label>
+          <input type="range" id="birth-slider" min="0" max="100" step="5" value="100">
+          <span id="birth-value" style="font-weight: bold; color: #FF9800;">100%</span>
+        </div>
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #E91E63;">Survive Prob.</label>
+          <input type="range" id="survive-slider" min="0" max="100" step="5" value="100">
+          <span id="survive-value" style="font-weight: bold; color: #E91E63;">100%</span>
+        </div>
+      </div>
+
+      <div class="id-grid" id="id-buttons"></div>
+    </div>
+
+    <div class="panel">
+      <div class="tabs" id="color-tabs"></div>
+      <div id="synth-panels"></div>
+    </div>
+  </div>
+
+<script>
+// --- CORE DATA & SETTINGS ---
+const COLS = 12;
+const ROWS = 12;
+let cellSize = 30;
+
+let BPM = 160;
+let BIRTH_PROBABILITY = 1.0; 
+let SURVIVE_PROBABILITY = 1.0; 
+
+let cells = [];
+let dirs = [[-1,-1], [0,-1], [1,-1], [-1,0], [1,0], [-1,1], [0,1], [1,1]];
+
+let lastBeatTime = 0;
+let isAudioInitialized = false;
+let globalTick = 0;
+
+let isPlaying = false; // 재생 상태 관리 변수
+let currentSelectedId = 0;
+
+let drumsHitThisFrame = new Set();
+
+const groupColors = [
+  { name: 'White (Drums)', hex: '#FFFFFF', rgb: [255,255,255] },
+  { name: 'Yellow', hex: '#FFFF00', rgb: [255,255,0] },
+  { name: 'Cyan', hex: '#00FFFF', rgb: [0,255,255] },
+  { name: 'Magenta', hex: '#FF00FF', rgb: [255,0,255] }
+];
+
+const globalPentatonic = [];
+const scaleIntervals = [0, 2, 4, 7, 9];
+for (let oct = 2; oct <= 6; oct++) {
+  let root = (oct + 1) * 12; 
+  scaleIntervals.forEach(interval => {
+    if (root + interval <= 84) globalPentatonic.push(root + interval);
+  });
+}
+globalPentatonic.push(84); 
+
+let synths = []; let filters = []; let drums = []; 
+let synthParams = [
+  null, 
+  { wave: 0, basePitchIdx: 10, attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0, filter: 5000 },
+  { wave: 0, basePitchIdx: 10, attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0, filter: 5000 },
+  { wave: 0, basePitchIdx: 10, attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0, filter: 5000 }
+];
+const waveShapes = ['sine', 'triangle', 'square', 'sawtooth'];
+
+function setup() {
+  let w = Math.min(windowWidth * 0.95, 400);
+  let canvas = createCanvas(w, w);
+  canvas.parent('canvas-container');
+  cellSize = w / COLS;
+
+  initGrid();
+  buildUI();
+  setupAudio();
+}
+
+function initGrid() {
+  let idCounter = 0;
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < COLS; c++) {
+      cells.push(new Cell(c, r, idCounter));
+      idCounter++;
+    }
+  }
+}
+
+function setupAudio() {
+  drums[0] = new Tone.MembraneSynth().toDestination();
+  drums[1] = new Tone.MetalSynth({ frequency: 200, envelope: { attack: 0.001, decay: 0.1, release: 0.01 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 }).toDestination();
+  drums[2] = new Tone.MetalSynth({ frequency: 200, envelope: { attack: 0.001, decay: 0.5, release: 0.5 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 }).toDestination();
+  drums[3] = new Tone.MembraneSynth({ pitchDecay: 0.05, octaves: 4, oscillator: { type: "sine" }, envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 } }).toDestination();
+  drums[4] = new Tone.NoiseSynth({ noise: { type: "white" }, envelope: { attack: 0.005, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
+
+  for(let i=1; i<4; i++) {
+    filters[i] = new Tone.Filter(synthParams[i].filter, "lowpass").toDestination();
+    synths[i] = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: waveShapes[synthParams[i].wave] },
+      envelope: { attack: synthParams[i].attack, decay: synthParams[i].decay, sustain: synthParams[i].sustain, release: synthParams[i].release }
+    }).connect(filters[i]);
+  }
+}
+
+async function ensureAudio() {
+  if (!isAudioInitialized) { await Tone.start(); isAudioInitialized = true; }
+}
+
+function togglePlay() {
+  ensureAudio();
+  isPlaying = !isPlaying;
+  let btn = document.getElementById('btn-play');
+  
+  if (isPlaying) {
+    btn.innerText = "⏸ Pause";
+    btn.classList.add('active');
+    lastBeatTime = millis(); // 켜자마자 바로 연주되도록 시간 초기화
+  } else {
+    btn.innerText = "▶ Play";
+    btn.classList.remove('active');
+  }
+}
+
+function randomMount() {
+  ensureAudio();
+  cells.forEach(c => {
+    if (Math.random() < 0.25) { 
+      c.isAlive = true; 
+      c.moduleType = Math.floor(Math.random() * 20); 
+    } else { 
+      c.isAlive = false; 
+    }
+  });
+  globalTick = 0; 
+}
+
+function clearAll() {
+  cells.forEach(c => { c.isAlive = false; c.nextAlive = false; c.isTouched = false; });
+  globalTick = 0;
+}
+
+function randomizeSynths() {
+  ensureAudio();
+  const ranges = {
+    wave: { min: 0, max: 3, step: 1, format: v => waveShapes[v] }, basePitchIdx: { min: 0, max: globalPentatonic.length - 5, step: 1, format: v => getNoteNameFromIdx(v) },
+    attack: { min: 0.01, max: 2.0, step: 0.01, format: v => v }, decay: { min: 0.1, max: 2.0, step: 0.1, format: v => v }, sustain: { min: 0.0, max: 1.0, step: 0.1, format: v => v },
+    release: { min: 0.1, max: 4.0, step: 0.1, format: v => v }, filter: { min: 200, max: 10000, step: 100, format: v => v }
+  };
+  for (let i = 1; i < 4; i++) { 
+    for (let key in ranges) {
+      let r = ranges[key]; let steps = (r.max - r.min) / r.step;
+      let val = r.min + Math.floor(Math.random() * (steps + 1)) * r.step; val = Math.round(val * 100) / 100;
+      synthParams[i][key] = val;
+      let inp = document.getElementById(`input-${i}-${key}`); let span = document.getElementById(`span-${i}-${key}`);
+      if (inp && span) { inp.value = val; span.innerText = r.format(val); }
+    }
+    updateSynth(i);
+  }
+}
+
+function savePreset() {
+  let presetData = {
+    globals: { bpm: BPM, birthProb: BIRTH_PROBABILITY, surviveProb: SURVIVE_PROBABILITY },
+    synths: synthParams,
+    grid: cells.map(c => ({ id: c.id, isAlive: c.isAlive, moduleType: c.moduleType }))
+  };
+  let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetData, null, 2));
+  let downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr); downloadAnchorNode.setAttribute("download", "mycelia_gol_preset.json");
+  document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
+}
+
+function triggerLoad() { document.getElementById('file-input').click(); }
+
+function loadPreset(event) {
+  let file = event.target.files[0];
+  if (!file) return;
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let presetData = JSON.parse(e.target.result);
+      if (presetData.globals) {
+        BPM = presetData.globals.bpm; document.getElementById('bpm-slider').value = BPM; document.getElementById('bpm-value').innerText = BPM;
+        BIRTH_PROBABILITY = presetData.globals.birthProb !== undefined ? presetData.globals.birthProb : 1.0; 
+        document.getElementById('birth-slider').value = Math.round(BIRTH_PROBABILITY * 100); document.getElementById('birth-value').innerText = Math.round(BIRTH_PROBABILITY * 100) + "%";
+        SURVIVE_PROBABILITY = presetData.globals.surviveProb !== undefined ? presetData.globals.surviveProb : 1.0;
+        document.getElementById('survive-slider').value = Math.round(SURVIVE_PROBABILITY * 100); document.getElementById('survive-value').innerText = Math.round(SURVIVE_PROBABILITY * 100) + "%";
+      }
+      if (presetData.synths) {
+        for (let i = 1; i < 4; i++) {
+          synthParams[i] = presetData.synths[i]; updateSynth(i);
+          const formats = { wave: v => waveShapes[v], basePitchIdx: v => getNoteNameFromIdx(v), attack: v => v, decay: v => v, sustain: v => v, release: v => v, filter: v => v };
+          for (let key in formats) {
+            let inp = document.getElementById(`input-${i}-${key}`); let span = document.getElementById(`span-${i}-${key}`);
+            if (inp && span) { inp.value = synthParams[i][key]; span.innerText = formats[key](synthParams[i][key]); }
+          }
+        }
+      }
+      if (presetData.grid) {
+        presetData.grid.forEach(savedCell => {
+          let cell = cells.find(c => c.id === savedCell.id);
+          if (cell) { cell.isAlive = savedCell.isAlive; cell.moduleType = savedCell.moduleType; cell.nextAlive = savedCell.isAlive; }
+        });
+      }
+      globalTick = 0; document.getElementById('file-input').value = ""; 
+    } catch (err) { alert("올바른 Mycelia 프리셋 파일이 아닙니다."); }
+  };
+  reader.readAsText(file);
+}
+
+function draw() {
+  background(30);
+  
+  let offsetX = width/2 - (COLS * cellSize)/2;
+  let offsetY = height/2 - (ROWS * cellSize)/2;
+  translate(offsetX, offsetY);
+
+  drumsHitThisFrame.clear();
+
+  // 재생(Play) 상태일 때만 비트를 계산하고 소리를 트리거합니다.
+  if (isPlaying) {
+    let tickInterval = 30000 / BPM; 
+    if (millis() - lastBeatTime >= tickInterval) {
+      processBeat();
+      lastBeatTime = millis();
+      globalTick++;
+    }
+  }
+
+  cells.forEach(c => c.display());
+}
+
+function processBeat() {
+  cells.forEach(c => {
+    let aliveNeighbors = [];
+    dirs.forEach(d => {
+      let nc = c.c + d[0]; let nr = c.r + d[1];
+      if (nc >= 0 && nc < COLS && nr >= 0 && nr < ROWS) {
+        let nId = nr * COLS + nc;
+        if (cells[nId].isAlive) aliveNeighbors.push(cells[nId]);
+      }
+    });
+
+    c.nextAlive = c.isAlive;
+
+    if (c.isAlive) {
+      if (aliveNeighbors.length < 2 || aliveNeighbors.length > 3) {
+        c.nextAlive = false;
+      } 
+      else if (Math.random() > SURVIVE_PROBABILITY) {
+        c.nextAlive = false;
+      }
+    } else {
+      if (aliveNeighbors.length === 3 && Math.random() < BIRTH_PROBABILITY) {
+        c.nextAlive = true;
+        let parent = aliveNeighbors[Math.floor(Math.random() * aliveNeighbors.length)];
+        c.nextModuleType = parent.moduleType;
+      }
+    }
+  });
+
+  cells.forEach(c => {
+    // 플레이 중에 새로 태어난 경우만 소리를 발생시킴
+    if (!c.isAlive && c.nextAlive) {
+      c.moduleType = c.nextModuleType;
+      triggerCASound(c.moduleType); 
+    }
+    c.isAlive = c.nextAlive;
+  });
+}
+
+function getFreq(id) {
+  let type = Math.floor(id / 5); let noteIdx = id % 5;
+  let baseIdx = synthParams[type].basePitchIdx;
+  let targetIdx = Math.min(baseIdx + noteIdx, globalPentatonic.length - 1);
+  return Tone.Frequency(globalPentatonic[targetIdx], "midi").toFrequency();
+}
+
+function triggerCASound(moduleType) {
+  ensureAudio();
+  let type = Math.floor(moduleType / 5);
+  let now = Tone.now(); 
+  if (type === 0) {
+    let drumIdx = moduleType % 5;
+    if (!drumsHitThisFrame.has(drumIdx)) {
+      if (drumIdx === 0) drums[0].triggerAttackRelease("C1", "8n", now);
+      else if (drumIdx === 1) drums[1].triggerAttackRelease("32n", now);
+      else if (drumIdx === 2) drums[2].triggerAttackRelease("8n", now);
+      else if (drumIdx === 3) drums[3].triggerAttackRelease("G2", "8n", now);
+      else if (drumIdx === 4) drums[4].triggerAttackRelease("16n", now);
+      drumsHitThisFrame.add(drumIdx);
+    }
+  } else {
+    synths[type].triggerAttackRelease(getFreq(moduleType), "16n", now);
+  }
+}
+
+// 클릭 시 토글 (Mount/Unmount)
+function mousePressed(event) {
+  ensureAudio();
+  if (event && event.target && event.target.tagName !== 'CANVAS') return;
+  
+  let offsetX = width/2 - (COLS * cellSize)/2;
+  let offsetY = height/2 - (ROWS * cellSize)/2;
+  let mX = mouseX - offsetX;
+  let mY = mouseY - offsetY;
+
+  cells.forEach(c => {
+    if (mX > c.x && mX < c.x + cellSize && mY > c.y && mY < c.y + cellSize) {
+      if (c.isAlive) {
+        // 이미 켜져 있으면 끈다 (Unmount)
+        c.isAlive = false; 
+      } else {
+        // 꺼져 있으면 켠다 (Mount)
+        c.isAlive = true; 
+        c.moduleType = currentSelectedId;
+        // 직접 클릭해서 배치할 때 소리를 듣고 싶다면 아래 주석을 해제하세요.
+        // triggerCASound(c.moduleType); 
+      }
+    }
+  });
+  return false; 
+}
+
+class Cell {
+  constructor(c, r, id) {
+    this.c = c; this.r = r; this.id = id;
+    this.x = c * cellSize; this.y = r * cellSize;
+    this.isAlive = false; this.nextAlive = false; 
+    this.moduleType = 0; 
+  }
+  display() {
+    push(); translate(this.x, this.y);
+    if (!this.isAlive) { 
+      noFill(); stroke(80); strokeWeight(1); 
+    } else {
+      let type = Math.floor(this.moduleType / 5); let col = groupColors[type].rgb;
+      fill(col[0]*0.8, col[1]*0.8, col[2]*0.8);
+      stroke(150); strokeWeight(2);
+    }
+    rect(2, 2, cellSize - 4, cellSize - 4, 4);
+    
+    if (this.isAlive) { 
+      fill(0); noStroke(); textAlign(CENTER, CENTER); textSize(11); textStyle(BOLD);
+      text(this.moduleType, cellSize/2, cellSize/2); 
+    }
+    pop();
+  }
+}
+
+function selectID(id) { 
+  ensureAudio(); 
+  currentSelectedId = id; 
+  document.querySelectorAll('.id-btn').forEach(b => b.classList.remove('selected')); 
+  document.getElementById('btn-id-' + id).classList.add('selected'); 
+}
+
+function getNoteNameFromIdx(idx) { let midi = globalPentatonic[idx]; return Tone.Frequency(midi, "midi").toNote(); }
+
+function buildUI() {
+  document.getElementById('bpm-slider').oninput = (e) => { BPM = parseInt(e.target.value); document.getElementById('bpm-value').innerText = BPM; };
+  document.getElementById('birth-slider').oninput = (e) => { BIRTH_PROBABILITY = parseInt(e.target.value) / 100; document.getElementById('birth-value').innerText = e.target.value + "%"; };
+  document.getElementById('survive-slider').oninput = (e) => { SURVIVE_PROBABILITY = parseInt(e.target.value) / 100; document.getElementById('survive-value').innerText = e.target.value + "%"; };
+
+  const idContainer = document.getElementById('id-buttons');
+  for (let i = 0; i < 20; i++) {
+    let btn = document.createElement('button'); let type = Math.floor(i / 5); btn.innerText = i; btn.className = 'id-btn' + (i === 0 ? ' selected' : ''); btn.id = 'btn-id-' + i; btn.style.backgroundColor = groupColors[type].hex; btn.onclick = () => selectID(i); idContainer.appendChild(btn);
+  }
+
+  const tabContainer = document.getElementById('color-tabs'); const panelContainer = document.getElementById('synth-panels');
+  groupColors.forEach((gc, idx) => {
+    let tBtn = document.createElement('button'); tBtn.innerText = gc.name; tBtn.className = 'tab-btn' + (idx === 0 ? ' active' : ''); tBtn.style.backgroundColor = gc.hex; tBtn.onclick = () => switchTab(idx); tabContainer.appendChild(tBtn);
+    let panel = document.createElement('div'); panel.className = 'synth-controls' + (idx === 0 ? ' active' : ''); panel.id = 'panel-' + idx;
+    if (idx === 0) {
+      let drumInfo = document.createElement('div'); drumInfo.style.padding = "10px"; drumInfo.style.lineHeight = "1.6"; drumInfo.style.fontSize = "0.9rem"; drumInfo.style.color = "#ccc";
+      drumInfo.innerHTML = `<strong style="color:white;">🥁 White Group (Drum Kit)</strong><br><span style="display:inline-block; margin-top:5px;">ID 0: Kick<br>ID 1: Closed Hi-Hat<br>ID 2: Open Hi-Hat<br>ID 3: Tom<br>ID 4: Clap</span>`;
+      panel.appendChild(drumInfo);
+    } else {
+      const sliders = [
+        { label: 'Wave', key: 'wave', min: 0, max: 3, step: 1, val: synthParams[idx].wave, format: v => waveShapes[v] }, { label: 'Base Pitch', key: 'basePitchIdx', min: 0, max: globalPentatonic.length - 5, step: 1, val: synthParams[idx].basePitchIdx, format: v => getNoteNameFromIdx(v) },
+        { label: 'Attack', key: 'attack', min: 0.01, max: 2.0, step: 0.01, val: synthParams[idx].attack, format: v => v }, { label: 'Decay', key: 'decay', min: 0.1, max: 2.0, step: 0.1, val: synthParams[idx].decay, format: v => v },
+        { label: 'Sustain', key: 'sustain', min: 0.0, max: 1.0, step: 0.1, val: synthParams[idx].sustain, format: v => v }, { label: 'Release', key: 'release', min: 0.1, max: 4.0, step: 0.1, val: synthParams[idx].release, format: v => v }, { label: 'Filter Cut', key: 'filter', min: 200, max: 10000, step: 100, val: synthParams[idx].filter, format: v => v }
+      ];
+      sliders.forEach(s => {
+        let row = document.createElement('div'); row.className = 'slider-row'; let lbl = document.createElement('label'); lbl.innerText = s.label;
+        let inp = document.createElement('input'); inp.type = 'range'; inp.min = s.min; inp.max = s.max; inp.step = s.step; inp.value = s.val; inp.id = `input-${idx}-${s.key}`;
+        let valSpan = document.createElement('span'); valSpan.innerText = s.format(s.val); valSpan.id = `span-${idx}-${s.key}`;
+        inp.oninput = (e) => { let v = parseFloat(e.target.value); valSpan.innerText = s.format(v); synthParams[idx][s.key] = v; updateSynth(idx); };
+        row.appendChild(lbl); row.appendChild(inp); row.appendChild(valSpan); panel.appendChild(row);
+      });
+    }
+    panelContainer.appendChild(panel);
+  });
+}
+
+function switchTab(idx) { document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx)); document.querySelectorAll('.synth-controls').forEach((p, i) => p.classList.toggle('active', i === idx)); }
+function updateSynth(idx) { if(!synths[idx] || idx === 0) return; let p = synthParams[idx]; synths[idx].set({ oscillator: { type: waveShapes[p.wave] }, envelope: { attack: p.attack, decay: p.decay, sustain: p.sustain, release: p.release } }); filters[idx].frequency.value = p.filter; }
+</script>
+</body>
+</html>

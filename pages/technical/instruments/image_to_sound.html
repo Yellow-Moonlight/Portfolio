@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Raw Float Optical Synth</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <style>
+    body { margin: 0; background-color: #111; overflow: hidden; font-family: monospace; color: white; }
+    #ui-layer {
+      position: absolute; top: 10px; left: 10px; right: 10px; z-index: 10;
+      background: rgba(0,0,0,0.7); padding: 15px; border-radius: 8px;
+    }
+    .btn-group { display: flex; gap: 10px; margin-bottom: 10px; }
+    button {
+      flex: 1; padding: 12px; font-size: 14px; font-weight: bold; cursor: pointer;
+      border: none; border-radius: 6px; background: #444; color: white;
+    }
+    #recBtn.recording { background: #ff3333; animation: blink 1s infinite; }
+    #playBtn.playing { background: #33cc33; }
+    #loopBtn.active { background: #0088ff; }
+    
+    @keyframes blink { 50% { opacity: 0.7; } }
+    
+    .info-panel { margin-top: 10px; font-size: 13px; line-height: 1.5; color: #aaa; }
+    .highlight { color: #0f0; font-weight: bold; font-size: 15px; }
+    input[type=range] { width: 100%; margin-top: 5px; }
+  </style>
+</head>
+<body>
+  <div id="ui-layer">
+    <div class="btn-group">
+      <button id="recBtn">🔴 녹화 (REC)</button>
+      <button id="playBtn">▶️ 재생 (PLAY)</button>
+      <button id="loopBtn" class="active">🔁 반복: ON</button>
+    </div>
+    
+    <label style="display:block; margin-top:10px; color:#fff;">
+      재생 속도: <span id="hzVal" class="highlight">8000</span> Hz
+    </label>
+    <input type="range" id="hzSlider" min="100" max="20000" step="100" value="8000">
+
+    <div class="info-panel">
+      • 수집된 샘플 수: <span id="sampleCount" class="highlight">0</span> 개<br>
+      • 오디오 재생 길이: <span id="playTime" class="highlight">0.000</span> 초
+    </div>
+  </div>
+
+  <script>
+    let cam;
+    let brightnessArray = []; // Float 데이터를 무한정 담을 배열
+    
+    // 상태 변수
+    let isRecording = false;
+    let isPlaying = false;
+    let isLooping = true;
+    let playhead = 0;
+    
+    // 오디오 관련
+    let audioCtx, scriptNode;
+    
+    // UI 요소
+    let recBtn, playBtn, loopBtn, hzSlider, hzVal, sampleCount, playTime;
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      
+      // 모바일 후면 카메라 연결
+      let constraints = { video: { facingMode: { ideal: "environment" } }, audio: false };
+      cam = createCapture(constraints);
+      cam.hide();
+
+      // UI 매핑
+      recBtn = document.getElementById('recBtn');
+      playBtn = document.getElementById('playBtn');
+      loopBtn = document.getElementById('loopBtn');
+      hzSlider = document.getElementById('hzSlider');
+      hzVal = document.getElementById('hzVal');
+      sampleCount = document.getElementById('sampleCount');
+      playTime = document.getElementById('playTime');
+
+      recBtn.addEventListener('click', toggleRecord);
+      playBtn.addEventListener('click', togglePlay);
+      loopBtn.addEventListener('click', toggleLoop);
+      
+      hzSlider.addEventListener('input', () => {
+        hzVal.innerText = hzSlider.value;
+        updateUI();
+      });
+    }
+
+    function draw() {
+      background(20);
+      let halfH = height / 2;
+
+      // --- 1. 상단: 실시간 카메라 화면 ---
+      if (cam.loadedmetadata) {
+        image(cam, 0, 0, width, halfH);
+        
+        // 빨간색 스캔 가이드라인 (정중앙 1픽셀)
+        stroke(255, 0, 0);
+        strokeWeight(2);
+        line(width/2, 0, width/2, halfH);
+
+        // --- 녹화 로직: 매 프레임마다 배열에 데이터 밀어넣기 ---
+        if (isRecording) {
+          cam.loadPixels();
+          let sum = 0;
+          let cx = Math.floor(cam.width / 2); // 정중앙 픽셀
+          
+          for (let y = 0; y < cam.height; y++) {
+            let idx = (cx + y * cam.width) * 4;
+            // RGB 평균으로 밝기 계산
+            sum += (cam.pixels[idx] + cam.pixels[idx+1] + cam.pixels[idx+2]) / 3.0;
+          }
+          
+          let avgBrightness = sum / cam.height;
+          // 오디오 전압(-1.0 ~ 1.0)으로 매핑하여 배열에 무한 저장
+          let audioSample = (avgBrightness / 255.0) * 2.0 - 1.0;
+          brightnessArray.push(audioSample);
+          
+          updateUI(); // UI 업데이트
+        }
+      }
+
+      // --- 2. 하단: 수집된 데이터를 오실로스코프 파형으로 시각화 ---
+      fill(0);
+      rect(0, halfH, width, halfH);
+      
+      let arrLen = brightnessArray.length;
+      if (arrLen > 0) {
+        stroke(0, 255, 0);
+        strokeWeight(1);
+        noFill();
+        beginShape();
+        // 배열이 너무 길면 화면에 맞춰서 간격을 압축해 그리기
+        let step = max(1, Math.floor(arrLen / width)); 
+        for (let i = 0; i < arrLen; i += step) {
+          let x = map(i, 0, arrLen, 0, width);
+          // -1.0 ~ 1.0 전압을 화면 높이에 매핑
+          let y = map(brightnessArray[i], -1, 1, height, halfH); 
+          vertex(x, y);
+        }
+        endShape();
+
+        // 재생 중일 때 현재 재생 위치(Playhead) 그리기
+        if (isPlaying) {
+          let px = map(playhead, 0, arrLen, 0, width);
+          stroke(255, 255, 0); // 노란색 스캐너 선
+          strokeWeight(2);
+          line(px, halfH, px, height);
+        }
+      } else {
+        fill(100); noStroke(); textAlign(CENTER, CENTER); textSize(14);
+        text("녹화 버튼을 눌러 소리 데이터를 수집하세요", width/2, halfH + halfH/2);
+      }
+    }
+
+    // --- 오디오 엔진 구성 ---
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        scriptNode = audioCtx.createScriptProcessor(2048, 1, 1);
+        
+        scriptNode.onaudioprocess = function(e) {
+          let output = e.outputBuffer.getChannelData(0);
+          
+          let currentHz = parseFloat(hzSlider.value);
+          // 실제 오디오 샘플레이트(44100)에 맞게 한 틱당 이동할 배열의 칸 수
+          let stepSize = currentHz / audioCtx.sampleRate;
+
+          for (let i = 0; i < output.length; i++) {
+            if (isPlaying && brightnessArray.length > 0) {
+              let idx = Math.floor(playhead);
+              
+              if (idx < brightnessArray.length) {
+                output[i] = brightnessArray[idx] * 0.5; // 볼륨 50%
+              } else {
+                output[i] = 0;
+              }
+
+              playhead += stepSize;
+
+              // 끝에 도달했을 때의 처리
+              if (playhead >= brightnessArray.length) {
+                if (isLooping) {
+                  playhead = 0; // 반복 재생
+                } else {
+                  playhead = 0;
+                  isPlaying = false; // 1회 재생 후 정지
+                  setTimeout(() => { // UI 업데이트를 위해 메인 스레드로 분리
+                    playBtn.classList.remove('playing');
+                    playBtn.innerText = "▶️ 재생 (PLAY)";
+                  }, 0);
+                  break; // 현재 오디오 버퍼 채우기 중단
+                }
+              }
+            } else {
+              output[i] = 0;
+            }
+          }
+        };
+        scriptNode.connect(audioCtx.destination);
+      }
+    }
+
+    // --- 버튼 컨트롤 함수들 ---
+    function toggleRecord() {
+      if (!isRecording) {
+        // 새로 녹화 시작 시 기존 배열 초기화
+        brightnessArray = [];
+        playhead = 0;
+        isRecording = true;
+        isPlaying = false;
+        playBtn.classList.remove('playing');
+        playBtn.innerText = "▶️ 재생 (PLAY)";
+        recBtn.classList.add('recording');
+        recBtn.innerText = "⏹ 녹화 중지";
+      } else {
+        isRecording = false;
+        recBtn.classList.remove('recording');
+        recBtn.innerText = "🔴 녹화 (REC)";
+      }
+    }
+
+    function togglePlay() {
+      if (isRecording) toggleRecord(); // 녹화 중이었다면 강제 종료
+      if (brightnessArray.length === 0) return;
+
+      initAudio();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        playBtn.classList.add('playing');
+        playBtn.innerText = "⏸ 정지 (PAUSE)";
+      } else {
+        playBtn.classList.remove('playing');
+        playBtn.innerText = "▶️ 재생 (PLAY)";
+      }
+    }
+
+    function toggleLoop() {
+      isLooping = !isLooping;
+      if (isLooping) {
+        loopBtn.classList.add('active');
+        loopBtn.innerText = "🔁 반복: ON";
+      } else {
+        loopBtn.classList.remove('active');
+        loopBtn.innerText = "➡️ 반복: OFF (1회 재생)";
+      }
+    }
+
+    function updateUI() {
+      sampleCount.innerText = brightnessArray.length;
+      let duration = brightnessArray.length / parseFloat(hzSlider.value);
+      playTime.innerText = duration.toFixed(3);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seongjoo Moon</title>
+    <link rel="stylesheet" href="../../css/style.css" />
+    <script src="../../js/component.js" defer></script>
+  </head>
+
+  <body>
+    <main-nav></main-nav>
+
+    <main class="main-content">
+      <article class="post-content">
+        <header class="post-header">
+          <h1 class="post-title">Music Dance</h1>
+          <h3 class="post-summary">
+            "Music Dance" is a project that transforms dance into music.
+          </h3>
+          <div class="post-date">2023-2024</div>
+        </header>
+
+        <div class="post-body">
+                      <p>
+            “Music Dance” is a project that transforms dance movements into
+            music. Using a gyroscopic sensor (MPU 6050) and an ESP32, tilt data
+            is sent to a master ESP32, which then converts the data into CV
+            (control voltage) values for a modular synthesizer. The X, Y, and Z
+            tilt values are transformed into CV signals, and the master ESP32
+            module includes knobs that allow users to adjust parameters such as
+            the minimum and maximum CV values, as well as the sensitivity based
+            on direction.
+          </p>
+          <figure class="figure">
+            <div class="container">
+              <iframe
+                class="responsive-iframe"
+                src="https://www.youtube.com/embed/FJX6AqGDLhs?si=EXbFNbZxLRNBo6i7"
+                allowfullscreen
+              ></iframe>
+            </div>
+            <figcaption class="img-caption">
+              Music Dance. Performed by Seongjoo Moon, Yeonhee Kim
+            </figcaption>
+          </figure>
+
+        </div>
+      </article>
+    </main>
+  </body>
+</html>

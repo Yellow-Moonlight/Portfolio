@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Seongjoo Moon - Mycelia Simulator</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <script src="/js/component.js" defer></script>
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+
+  <style>
+    /* 웹사이트 기본 폰트 및 배경 유지하되 시뮬레이터 정렬을 위한 스타일 */
+    #mycelia-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #fff;
+      font-family: sans-serif;
+      padding: 20px 0;
+    }
+    
+    #mycelia-container h2 { margin: 10px 0 5px 0; font-size: 1.2rem; }
+    #canvas-container { margin-bottom: 10px; }
+    
+    .panel {
+      width: 95%; max-width: 500px;
+      background: #333; border-radius: 8px; padding: 10px; box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    .action-btns { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+    .action-btn {
+      flex: 1; padding: 10px; font-weight: bold; border: none; border-radius: 6px;
+      background: #555; color: white; cursor: pointer; font-size: 0.9rem;
+      user-select: none;
+    }
+    .action-btn.active { background: #4CAF50; }
+    
+    .util-btn {
+      flex: 1; padding: 10px; font-weight: bold; border: none; border-radius: 6px;
+      color: white; cursor: pointer; font-size: 0.85rem; user-select: none;
+    }
+    .btn-rand-mount { background: #607D8B; }
+    .btn-rand-synth { background: #9C27B0; }
+    .btn-clear { background: #F44336; }
+    .btn-save { background: #008CBA; }
+    .btn-load { background: #FF9800; }
+
+    .global-settings {
+      border-top: 1px solid #444; border-bottom: 1px solid #444; 
+      padding: 10px 0; margin-bottom: 10px;
+    }
+    
+    .id-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+    .id-btn {
+      padding: 10px 0; border: 2px solid transparent; border-radius: 6px;
+      font-weight: bold; color: #000; cursor: pointer; text-align: center; user-select: none;
+    }
+    .id-btn.selected { border-color: #fff; transform: scale(0.95); }
+    
+    .tabs { display: flex; gap: 5px; margin-bottom: 15px; }
+    .tab-btn {
+      flex: 1; padding: 8px; border: none; cursor: pointer; font-weight: bold;
+      border-radius: 4px; opacity: 0.5; color: #000; user-select: none;
+    }
+    .tab-btn.active { opacity: 1; border: 2px solid white; }
+    
+    .synth-controls { display: none; }
+    .synth-controls.active { display: block; }
+    .slider-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .slider-row label { width: 32%; font-size: 0.9rem; }
+    .slider-row input[type=range] { width: 53%; }
+    .slider-row span { width: 15%; text-align: right; font-size: 0.8rem; }
+  </style>
+</head>
+
+<body>
+  <main-nav></main-nav>
+
+  <div id="mycelia-container">
+    <h2>Mycelia Simulator</h2>
+    <div id="canvas-container"></div>
+
+    <div class="panel">
+      <div class="action-btns">
+        <button id="btn-mount" class="action-btn active" onclick="setMode('MOUNT')">Mount</button>
+        <button id="btn-unmount" class="action-btn" onclick="setMode('UNMOUNT')">Unmount</button>
+        <button id="btn-spark" class="action-btn" onclick="setMode('SPARK')">Spark (Hold)</button>
+      </div>
+      
+      <div class="action-btns">
+        <button class="util-btn btn-save" onclick="savePreset()">💾 Save Preset</button>
+        <button class="util-btn btn-load" onclick="triggerLoad()">📂 Load Preset</button>
+        <input type="file" id="file-input" style="display: none;" accept=".json" onchange="loadPreset(event)">
+      </div>
+
+      <div class="action-btns">
+        <button class="util-btn btn-rand-mount" onclick="randomMount()">Rand Mount</button>
+        <button class="util-btn btn-rand-synth" onclick="randomizeSynths()">Rand Synths</button>
+        <button class="util-btn btn-clear" onclick="clearAll()">Clear All</button>
+      </div>
+      
+      <div class="global-settings">
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #4CAF50;">Global BPM</label>
+          <input type="range" id="bpm-slider" min="60" max="240" step="1" value="160">
+          <span id="bpm-value" style="font-weight: bold; color: #4CAF50;">160</span>
+        </div>
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #4CAF50;">Refractory</label>
+          <input type="range" id="refractory-slider" min="1" max="10" step="1" value="4">
+          <span id="refractory-value" style="font-weight: bold; color: #4CAF50;">4</span>
+        </div>
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #4CAF50;">Prop. Prob.</label>
+          <input type="range" id="prob-slider" min="10" max="100" step="5" value="100">
+          <span id="prob-value" style="font-weight: bold; color: #4CAF50;">100%</span>
+        </div>
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #FF9800;">Syncopation</label>
+          <input type="range" id="sync-slider" min="0" max="100" step="5" value="20">
+          <span id="sync-value" style="font-weight: bold; color: #FF9800;">20%</span>
+        </div>
+        <div class="slider-row">
+          <label style="font-weight: bold; color: #E91E63;">Branch 2 Prob.</label>
+          <input type="range" id="branch-slider" min="0" max="100" step="5" value="35">
+          <span id="branch-value" style="font-weight: bold; color: #E91E63;">35%</span>
+        </div>
+      </div>
+
+      <div class="id-grid" id="id-buttons"></div>
+    </div>
+
+    <div class="panel">
+      <div class="tabs" id="color-tabs"></div>
+      <div id="synth-panels"></div>
+    </div>
+  </div>
+
+<script>
+// --- CORE DATA & SETTINGS ---
+const TOTAL_CELLS = 37;
+const GRID_RADIUS = 3;
+let hexSize = 25;
+
+let BPM = 160;
+let REFRACTORY_PERIOD = 4;
+let PROPAGATION_PROBABILITY = 1.0; 
+let SYNCOPATION_PROBABILITY = 0.2; 
+let BRANCH_2_PROBABILITY = 0.35; 
+
+let cells = [];
+let axialDirs = [[1, 0], [1, -1], [0, -1], [-1, 0], [-1, 1], [0, 1]];
+let lastBeatTime = 0;
+let isAudioInitialized = false;
+
+let globalTick = 0;
+let currentMode = 'MOUNT'; 
+let currentSelectedId = 0;
+
+let drumsHitThisFrame = new Set();
+let isDrumHeld = {0:false, 1:false, 2:false, 3:false, 4:false};
+
+const groupColors = [
+  { name: 'White (Drums)', hex: '#FFFFFF', rgb: [255,255,255] },
+  { name: 'Yellow', hex: '#FFFF00', rgb: [255,255,0] },
+  { name: 'Cyan', hex: '#00FFFF', rgb: [0,255,255] },
+  { name: 'Magenta', hex: '#FF00FF', rgb: [255,0,255] }
+];
+
+const globalPentatonic = [];
+const scaleIntervals = [0, 2, 4, 7, 9];
+for (let oct = 2; oct <= 6; oct++) {
+  let root = (oct + 1) * 12; 
+  scaleIntervals.forEach(interval => {
+    if (root + interval <= 84) globalPentatonic.push(root + interval);
+  });
+}
+globalPentatonic.push(84); 
+
+let synths = [];
+let filters = [];
+let drums = []; 
+let synthParams = [
+  null, 
+  { wave: 0, basePitchIdx: 10, attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0, filter: 5000 },
+  { wave: 0, basePitchIdx: 10, attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0, filter: 5000 },
+  { wave: 0, basePitchIdx: 10, attack: 0.05, decay: 0.2, sustain: 0.2, release: 1.0, filter: 5000 }
+];
+const waveShapes = ['sine', 'triangle', 'square', 'sawtooth'];
+
+let activeUserNotes = {};
+
+function setup() {
+  let w = Math.min(windowWidth * 0.95, 400);
+  let canvas = createCanvas(w, w);
+  canvas.parent('canvas-container');
+  hexSize = w / 13.5;
+
+  initGrid();
+  buildUI();
+  setupAudio();
+}
+
+function initGrid() {
+  let idCounter = 0;
+  for (let q = -GRID_RADIUS; q <= GRID_RADIUS; q++) {
+    let r1 = Math.max(-GRID_RADIUS, -q - GRID_RADIUS);
+    let r2 = Math.min(GRID_RADIUS, -q + GRID_RADIUS);
+    for (let r = r1; r <= r2; r++) {
+      if (idCounter < TOTAL_CELLS) {
+        cells.push(new Cell(q, r, idCounter));
+        idCounter++;
+      }
+    }
+  }
+
+  cells.forEach(c => {
+    axialDirs.forEach(dir => {
+      let nId = findIdByCoords(c.q + dir[0], c.r + dir[1]);
+      c.neighbors.push(nId);
+    });
+  });
+}
+
+function setupAudio() {
+  drums[0] = new Tone.MembraneSynth().toDestination();
+  drums[1] = new Tone.MetalSynth({ frequency: 200, envelope: { attack: 0.001, decay: 0.1, release: 0.01 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 }).toDestination();
+  drums[2] = new Tone.MetalSynth({ frequency: 200, envelope: { attack: 0.001, decay: 0.5, release: 0.5 }, harmonicity: 5.1, modulationIndex: 32, resonance: 4000, octaves: 1.5 }).toDestination();
+  drums[3] = new Tone.MembraneSynth({ pitchDecay: 0.05, octaves: 4, oscillator: { type: "sine" }, envelope: { attack: 0.001, decay: 0.4, sustain: 0.01, release: 1.4 } }).toDestination();
+  drums[4] = new Tone.NoiseSynth({ noise: { type: "white" }, envelope: { attack: 0.005, decay: 0.2, sustain: 0, release: 0.2 } }).toDestination();
+
+  for(let i=1; i<4; i++) {
+    filters[i] = new Tone.Filter(synthParams[i].filter, "lowpass").toDestination();
+    synths[i] = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: waveShapes[synthParams[i].wave] },
+      envelope: { attack: synthParams[i].attack, decay: synthParams[i].decay, sustain: synthParams[i].sustain, release: synthParams[i].release }
+    }).connect(filters[i]);
+  }
+}
+
+async function ensureAudio() {
+  if (!isAudioInitialized) {
+    await Tone.start();
+    isAudioInitialized = true;
+  }
+}
+
+function savePreset() {
+  let presetData = {
+    globals: { bpm: BPM, refractory: REFRACTORY_PERIOD, propProb: PROPAGATION_PROBABILITY, syncProb: SYNCOPATION_PROBABILITY, branch2Prob: BRANCH_2_PROBABILITY },
+    synths: synthParams,
+    grid: cells.map(c => ({ id: c.id, isOccupied: c.isOccupied, moduleType: c.moduleType }))
+  };
+  let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(presetData, null, 2));
+  let downloadAnchorNode = document.createElement('a'); downloadAnchorNode.setAttribute("href", dataStr); downloadAnchorNode.setAttribute("download", "mycelia_preset.json");
+  document.body.appendChild(downloadAnchorNode); downloadAnchorNode.click(); downloadAnchorNode.remove();
+}
+
+function triggerLoad() { document.getElementById('file-input').click(); }
+
+function loadPreset(event) {
+  let file = event.target.files[0];
+  if (!file) return;
+  let reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      let presetData = JSON.parse(e.target.result);
+      if (presetData.globals) {
+        BPM = presetData.globals.bpm; document.getElementById('bpm-slider').value = BPM; document.getElementById('bpm-value').innerText = BPM;
+        REFRACTORY_PERIOD = presetData.globals.refractory; document.getElementById('refractory-slider').value = REFRACTORY_PERIOD; document.getElementById('refractory-value').innerText = REFRACTORY_PERIOD;
+        PROPAGATION_PROBABILITY = presetData.globals.propProb; document.getElementById('prob-slider').value = Math.round(PROPAGATION_PROBABILITY * 100); document.getElementById('prob-value').innerText = Math.round(PROPAGATION_PROBABILITY * 100) + "%";
+        SYNCOPATION_PROBABILITY = presetData.globals.syncProb; document.getElementById('sync-slider').value = Math.round(SYNCOPATION_PROBABILITY * 100); document.getElementById('sync-value').innerText = Math.round(SYNCOPATION_PROBABILITY * 100) + "%";
+        BRANCH_2_PROBABILITY = presetData.globals.branch2Prob !== undefined ? presetData.globals.branch2Prob : 0.35;
+        document.getElementById('branch-slider').value = Math.round(BRANCH_2_PROBABILITY * 100); document.getElementById('branch-value').innerText = Math.round(BRANCH_2_PROBABILITY * 100) + "%";
+      }
+      if (presetData.synths) {
+        for (let i = 1; i < 4; i++) {
+          synthParams[i] = presetData.synths[i]; updateSynth(i);
+          const formats = { wave: v => waveShapes[v], basePitchIdx: v => getNoteNameFromIdx(v), attack: v => v, decay: v => v, sustain: v => v, release: v => v, filter: v => v };
+          for (let key in formats) {
+            let inp = document.getElementById(`input-${i}-${key}`); let span = document.getElementById(`span-${i}-${key}`);
+            if (inp && span) { inp.value = synthParams[i][key]; span.innerText = formats[key](synthParams[i][key]); }
+          }
+        }
+      }
+      if (presetData.grid) {
+        presetData.grid.forEach(savedCell => {
+          let cell = cells.find(c => c.id === savedCell.id);
+          if (cell) { cell.isOccupied = savedCell.isOccupied; cell.moduleType = savedCell.moduleType; cell.state = 0; cell.nextState = 0; }
+        });
+      }
+      globalTick = 0; document.getElementById('file-input').value = ""; 
+    } catch (err) { alert("올바른 Mycelia 프리셋 파일이 아닙니다."); }
+  };
+  reader.readAsText(file);
+}
+
+function randomMount() {
+  ensureAudio();
+  cells.forEach(c => {
+    if (Math.random() < 0.4) { c.isOccupied = true; c.moduleType = Math.floor(Math.random() * 20); } else { c.isOccupied = false; }
+    c.state = 0; c.nextState = 0;
+  });
+  globalTick = 0; 
+}
+
+function clearAll() {
+  cells.forEach(c => { c.isOccupied = false; c.state = 0; c.nextState = 0; c.isTouched = false; });
+  globalTick = 0;
+}
+
+function randomizeSynths() {
+  ensureAudio();
+  const ranges = {
+    wave: { min: 0, max: 3, step: 1, format: v => waveShapes[v] }, basePitchIdx: { min: 0, max: globalPentatonic.length - 5, step: 1, format: v => getNoteNameFromIdx(v) },
+    attack: { min: 0.01, max: 2.0, step: 0.01, format: v => v }, decay: { min: 0.1, max: 2.0, step: 0.1, format: v => v }, sustain: { min: 0.0, max: 1.0, step: 0.1, format: v => v },
+    release: { min: 0.1, max: 4.0, step: 0.1, format: v => v }, filter: { min: 200, max: 10000, step: 100, format: v => v }
+  };
+  for (let i = 1; i < 4; i++) { 
+    for (let key in ranges) {
+      let r = ranges[key]; let steps = (r.max - r.min) / r.step;
+      let val = r.min + Math.floor(Math.random() * (steps + 1)) * r.step; val = Math.round(val * 100) / 100;
+      synthParams[i][key] = val;
+      let inp = document.getElementById(`input-${i}-${key}`); let span = document.getElementById(`span-${i}-${key}`);
+      if (inp && span) { inp.value = val; span.innerText = r.format(val); }
+    }
+    updateSynth(i);
+  }
+}
+
+function draw() {
+  background(30);
+  translate(width / 2, height / 2);
+
+  drumsHitThisFrame.clear();
+
+  let isSystemActive = cells.some(cell => cell.state > 0 || cell.isTouched);
+  if (isSystemActive) {
+    let tickInterval = 30000 / BPM; 
+    if (millis() - lastBeatTime >= tickInterval) {
+      processBeat();
+      lastBeatTime = millis();
+      globalTick++;
+    }
+  } else {
+    lastBeatTime = millis();
+    globalTick = 0; 
+  }
+
+  cells.forEach(c => c.display());
+}
+
+function processBeat() {
+  let isDownbeat = (globalTick % 2 === 0);
+  cells.forEach(c => c.nextState = c.state);
+
+  cells.forEach(c => {
+    if (!c.isOccupied) return;
+
+    if (c.state === 1) {
+      c.nextState = 2; 
+    } else if (c.state === 2) {
+      let validNeighbors = c.neighbors.filter(nId => 
+        nId !== -1 && cells[nId].isOccupied && cells[nId].state === 0 && cells[nId].nextState === 0 && !cells[nId].isTouched
+      );
+
+      if (validNeighbors.length > 0) {
+        validNeighbors.sort(() => Math.random() - 0.5);
+        let branches = 1;
+        if (validNeighbors.length >= 2 && Math.random() < BRANCH_2_PROBABILITY) {
+          branches = 2;
+        }
+
+        for (let b = 0; b < Math.min(branches, validNeighbors.length); b++) {
+          if (Math.random() < PROPAGATION_PROBABILITY) {
+            let targetId = validNeighbors[b];
+            if (isDownbeat) {
+              if (Math.random() < SYNCOPATION_PROBABILITY) cells[targetId].nextState = 2; 
+              else cells[targetId].nextState = 1; 
+            } else {
+              cells[targetId].nextState = 2; 
+            }
+          }
+        }
+      }
+      c.nextState = (REFRACTORY_PERIOD <= 1) ? 0 : 3; 
+    } else if (c.state >= 3) {
+      let maxRefractoryState = (REFRACTORY_PERIOD * 2) + 2;
+      if (c.state >= maxRefractoryState) c.nextState = 0;
+      else c.nextState = c.state + 1;
+    }
+  });
+
+  cells.forEach(c => {
+    if (c.nextState === 2 && c.state !== 2) {
+      triggerCASound(c.moduleType); 
+    }
+    c.state = c.nextState;
+  });
+}
+
+function getFreq(id) {
+  let type = Math.floor(id / 5); let noteIdx = id % 5;
+  let baseIdx = synthParams[type].basePitchIdx;
+  let targetIdx = Math.min(baseIdx + noteIdx, globalPentatonic.length - 1);
+  return Tone.Frequency(globalPentatonic[targetIdx], "midi").toFrequency();
+}
+
+// 스위치 기기 연동이나 마우스 타격 스케줄 처리용 함수들
+function triggerDrumAttack(moduleType, time) {
+  let drumIdx = moduleType % 5;
+  if (drumIdx === 0) drums[0].triggerAttack("C1", time);
+  else if (drumIdx === 1) drums[1].triggerAttack(time);
+  else if (drumIdx === 2) drums[2].triggerAttack(time);
+  else if (drumIdx === 3) drums[3].triggerAttack("G2", time);
+  else if (drumIdx === 4) drums[4].triggerAttack(time);
+}
+
+function triggerDrumRelease(moduleType, time) {
+  let drumIdx = moduleType % 5;
+  drums[drumIdx].triggerRelease(time);
+}
+
+function triggerDrumAttackRelease(moduleType, time) {
+  let drumIdx = moduleType % 5;
+  if (drumIdx === 0) drums[0].triggerAttackRelease("C1", "8n", time);
+  else if (drumIdx === 1) drums[1].triggerAttackRelease("32n", time);
+  else if (drumIdx === 2) drums[2].triggerAttackRelease("8n", time);
+  else if (drumIdx === 3) drums[3].triggerAttackRelease("G2", "8n", time);
+  else if (drumIdx === 4) drums[4].triggerAttackRelease("16n", time);
+}
+
+function triggerCASound(moduleType) {
+  ensureAudio();
+  let type = Math.floor(moduleType / 5);
+  let now = Tone.now(); 
+
+  if (type === 0) {
+    let drumIdx = moduleType % 5;
+    if (!drumsHitThisFrame.has(drumIdx) && !isDrumHeld[drumIdx]) {
+      triggerDrumAttackRelease(moduleType, now);
+      drumsHitThisFrame.add(drumIdx);
+    }
+  } else {
+    synths[type].triggerAttackRelease(getFreq(moduleType), "16n", now);
+  }
+}
+
+function mousePressed(event) {
+  ensureAudio();
+  if (event && event.target && event.target.tagName !== 'CANVAS') return;
+  if (mouseX < 0 || mouseX > width || mouseY < 0 || mouseY > height) return;
+
+  cells.forEach(c => {
+    if (dist(mouseX - width/2, mouseY - height/2, c.x, c.y) < hexSize) {
+      if (currentMode === 'UNMOUNT') {
+        c.isOccupied = false; c.state = 0; c.nextState = 0; c.isTouched = false;
+      } else if (currentMode === 'MOUNT') {
+        c.isOccupied = true; c.moduleType = currentSelectedId; c.state = 0; c.nextState = 0; c.isTouched = false;
+      } else if (currentMode === 'SPARK' && c.isOccupied) {
+        c.isTouched = true;
+        let type = Math.floor(c.moduleType / 5);
+        let now = Tone.now();
+
+        if (type === 0) {
+          let drumIdx = c.moduleType % 5;
+          isDrumHeld[drumIdx] = true;
+          triggerDrumAttack(c.moduleType, now);
+        } else {
+          let freq = getFreq(c.moduleType);
+          synths[type].triggerAttack(freq, now);
+          activeUserNotes[c.id] = { type: type, freq: freq };
+        }
+      }
+    }
+  });
+  return false; 
+}
+
+function mouseReleased(event) {
+  if (event && event.target && event.target.tagName !== 'CANVAS') return;
+
+  let now = Tone.now();
+  cells.forEach(c => {
+    if (c.isTouched) {
+      c.isTouched = false;
+      
+      let type = Math.floor(c.moduleType / 5);
+      if (type === 0) {
+        let drumIdx = c.moduleType % 5;
+        isDrumHeld[drumIdx] = false; 
+        triggerDrumRelease(c.moduleType, now);
+      }
+
+      let isSystemActive = cells.some(cell => cell.state > 0);
+      if (!isSystemActive) {
+        globalTick = 0;
+        lastBeatTime = millis();
+      }
+      
+      c.state = 1; 
+      c.nextState = 1;
+    }
+  });
+
+  for (let id in activeUserNotes) {
+    let note = activeUserNotes[id];
+    synths[note.type].triggerRelease(note.freq, now);
+  }
+  activeUserNotes = {};
+  return false;
+}
+
+class Cell {
+  constructor(q, r, id) {
+    this.q = q; this.r = r; this.id = id;
+    this.x = hexSize * (3/2 * q); this.y = hexSize * (sqrt(3)/2 * q + sqrt(3) * r);
+    this.isOccupied = false; this.moduleType = 0; this.state = 0; this.nextState = 0; this.isTouched = false; this.neighbors = [];
+  }
+  display() {
+    push(); translate(this.x, this.y);
+    if (!this.isOccupied) { noFill(); stroke(80); strokeWeight(1); } else {
+      let type = Math.floor(this.moduleType / 5); let col = groupColors[type].rgb;
+      if (this.isTouched || this.state === 2) { fill(255); } else if (this.state >= 3) {
+        let maxState = (REFRACTORY_PERIOD * 2) + 2; let ratio = map(this.state, 3, maxState, 1.0, 0.0); ratio = constrain(ratio, 0, 1);
+        fill(lerpColor(color(col[0]*0.3, col[1]*0.3, col[2]*0.3), color(col), ratio));
+      } else { fill(col[0]*0.4, col[1]*0.4, col[2]*0.4); }
+      stroke(150); strokeWeight(2);
+    }
+    beginShape(); for (let i = 0; i < 6; i++) { let angle = PI / 3 * i; vertex((hexSize - 2) * cos(angle), (hexSize - 2) * sin(angle)); } endShape(CLOSE);
+    if (this.isOccupied) { fill(255); noStroke(); textAlign(CENTER, CENTER); textSize(10); text(this.moduleType, 0, 0); }
+    pop();
+  }
+}
+
+function findIdByCoords(q, r) { let found = cells.find(c => c.q === q && c.r === r); return found ? found.id : -1; }
+function setMode(mode) { ensureAudio(); currentMode = mode; document.querySelectorAll('.action-btn').forEach(b => b.classList.remove('active')); document.getElementById('btn-' + mode.toLowerCase()).classList.add('active'); }
+function selectID(id) { ensureAudio(); setMode('MOUNT'); currentSelectedId = id; document.querySelectorAll('.id-btn').forEach(b => b.classList.remove('selected')); document.getElementById('btn-id-' + id).classList.add('selected'); }
+function getNoteNameFromIdx(idx) { let midi = globalPentatonic[idx]; return Tone.Frequency(midi, "midi").toNote(); }
+
+function buildUI() {
+  const bpmSlider = document.getElementById('bpm-slider'); const bpmValue = document.getElementById('bpm-value');
+  bpmSlider.oninput = (e) => { BPM = parseInt(e.target.value); bpmValue.innerText = BPM; };
+  const refractorySlider = document.getElementById('refractory-slider'); const refractoryValue = document.getElementById('refractory-value');
+  refractorySlider.oninput = (e) => { REFRACTORY_PERIOD = parseInt(e.target.value); refractoryValue.innerText = REFRACTORY_PERIOD; };
+  const probSlider = document.getElementById('prob-slider'); const probValue = document.getElementById('prob-value');
+  probSlider.oninput = (e) => { PROPAGATION_PROBABILITY = parseInt(e.target.value) / 100; probValue.innerText = e.target.value + "%"; };
+  const syncSlider = document.getElementById('sync-slider'); const syncValue = document.getElementById('sync-value');
+  syncSlider.oninput = (e) => { SYNCOPATION_PROBABILITY = parseInt(e.target.value) / 100; syncValue.innerText = e.target.value + "%"; };
+  const branchSlider = document.getElementById('branch-slider'); const branchValue = document.getElementById('branch-value');
+  branchSlider.oninput = (e) => { BRANCH_2_PROBABILITY = parseInt(e.target.value) / 100; branchValue.innerText = e.target.value + "%"; };
+
+  const idContainer = document.getElementById('id-buttons');
+  for (let i = 0; i < 20; i++) {
+    let btn = document.createElement('button'); let type = Math.floor(i / 5); btn.innerText = i; btn.className = 'id-btn' + (i === 0 ? ' selected' : ''); btn.id = 'btn-id-' + i; btn.style.backgroundColor = groupColors[type].hex; btn.onclick = () => selectID(i); idContainer.appendChild(btn);
+  }
+
+  const tabContainer = document.getElementById('color-tabs'); const panelContainer = document.getElementById('synth-panels');
+  groupColors.forEach((gc, idx) => {
+    let tBtn = document.createElement('button'); tBtn.innerText = gc.name; tBtn.className = 'tab-btn' + (idx === 0 ? ' active' : ''); tBtn.style.backgroundColor = gc.hex; tBtn.onclick = () => switchTab(idx); tabContainer.appendChild(tBtn);
+    let panel = document.createElement('div'); panel.className = 'synth-controls' + (idx === 0 ? ' active' : ''); panel.id = 'panel-' + idx;
+    if (idx === 0) {
+      let drumInfo = document.createElement('div'); drumInfo.style.padding = "10px"; drumInfo.style.lineHeight = "1.6"; drumInfo.style.fontSize = "0.9rem"; drumInfo.style.color = "#ccc";
+      drumInfo.innerHTML = `<strong style="color:white;">🥁 White Group (Drum Kit)</strong><br><span style="display:inline-block; margin-top:5px;">ID 0: Kick<br>ID 1: Closed Hi-Hat<br>ID 2: Open Hi-Hat<br>ID 3: Tom<br>ID 4: Clap</span><br><em style="color:#888; font-size:0.8rem; display:block; margin-top:10px;">(Synth parameters are disabled for drums)</em>`;
+      panel.appendChild(drumInfo);
+    } else {
+      const sliders = [
+        { label: 'Wave', key: 'wave', min: 0, max: 3, step: 1, val: synthParams[idx].wave, format: v => waveShapes[v] }, { label: 'Base Pitch', key: 'basePitchIdx', min: 0, max: globalPentatonic.length - 5, step: 1, val: synthParams[idx].basePitchIdx, format: v => getNoteNameFromIdx(v) },
+        { label: 'Attack', key: 'attack', min: 0.01, max: 2.0, step: 0.01, val: synthParams[idx].attack, format: v => v }, { label: 'Decay', key: 'decay', min: 0.1, max: 2.0, step: 0.1, val: synthParams[idx].decay, format: v => v },
+        { label: 'Sustain', key: 'sustain', min: 0.0, max: 1.0, step: 0.1, val: synthParams[idx].sustain, format: v => v }, { label: 'Release', key: 'release', min: 0.1, max: 4.0, step: 0.1, val: synthParams[idx].release, format: v => v }, { label: 'Filter Cut', key: 'filter', min: 200, max: 10000, step: 100, val: synthParams[idx].filter, format: v => v }
+      ];
+      sliders.forEach(s => {
+        let row = document.createElement('div'); row.className = 'slider-row'; let lbl = document.createElement('label'); lbl.innerText = s.label;
+        let inp = document.createElement('input'); inp.type = 'range'; inp.min = s.min; inp.max = s.max; inp.step = s.step; inp.value = s.val; inp.id = `input-${idx}-${s.key}`;
+        let valSpan = document.createElement('span'); valSpan.innerText = s.format(s.val); valSpan.id = `span-${idx}-${s.key}`;
+        inp.oninput = (e) => { let v = parseFloat(e.target.value); valSpan.innerText = s.format(v); synthParams[idx][s.key] = v; updateSynth(idx); };
+        row.appendChild(lbl); row.appendChild(inp); row.appendChild(valSpan); panel.appendChild(row);
+      });
+    }
+    panelContainer.appendChild(panel);
+  });
+}
+
+function switchTab(idx) { document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx)); document.querySelectorAll('.synth-controls').forEach((p, i) => p.classList.toggle('active', i === idx)); }
+function updateSynth(idx) { if(!synths[idx] || idx === 0) return; let p = synthParams[idx]; synths[idx].set({ oscillator: { type: waveShapes[p.wave] }, envelope: { attack: p.attack, decay: p.decay, sustain: p.sustain, release: p.release } }); filters[idx].frequency.value = p.filter; }
+</script>
+</body>
+</html>

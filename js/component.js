@@ -9,7 +9,6 @@ class MainNav extends HTMLElement {
                     <li><a href="/pages/about.html">about</a></li>
                     <li><a href="/pages/news.html">news</a></li>
                     <li><a href="/pages/works.html">works</a></li>
-                    <li><a href="/pages/technical_works.html">technical works</a></li>
                     <li><a href="/pages/rabbit-hole.html">rabbit hole</a></li>
                     <li><a href="/pages/blog.html">blog</a></li>
                 </ul>
